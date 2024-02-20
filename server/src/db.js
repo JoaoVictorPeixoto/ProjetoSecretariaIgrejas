@@ -21,6 +21,10 @@ class db {
             return error;
         }
     }
+
+    async insert(sql){
+        
+    }
 }
 
 module.exports = db
