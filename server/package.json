@@ -1,0 +1,21 @@
+{
+  "name": "packjson",
+  "version": "1.0.0",
+  "description": "Projeto de aprendizado",
+  "main": "index.js",
+  "scripts": {
+    "test": "console.log('bobagem');"
+  },
+  "keywords": [
+    "primeiro",
+    "projeto",
+    "fullstack"
+  ],
+  "author": "@Peixoto",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "mysql2": "^3.9.0"
+  }
+}
