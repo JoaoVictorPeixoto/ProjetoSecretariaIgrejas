@@ -122,12 +122,19 @@ class router {
         return retorno;
     }
 
-    async cadastrarMembro(){
+    async cadastrarMembro(paramns){
         console.log('cadastrando_membro');
-        return {
-            erro: false,
-            mensagem: "Cadastrando Membro!"
+        try {
+            let res = await this.db.insert(paramns.sql.fields, paramns.sql.values, paramns.sql.tabela);
+            return res
+        } catch (error) {
+            console.log(error);
+            return {
+                erro: true,
+                mensagem: 'Falha ao Cadastrar Usuario'
+            }
         }
+        
     }
 }
 

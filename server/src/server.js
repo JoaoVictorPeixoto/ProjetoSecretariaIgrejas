@@ -19,13 +19,18 @@ server.post('/interacao', async (req, res) => {
     const ROUTER = new router()
         , body = req.body
     ;
-    let results = await ROUTER.resolver(body.interacao, body);
+    try {
+        let results = await ROUTER.resolver(body.interacao, body);
 
-    if(results.erro){
-        res.status(401).json(results);
-    } else {
-        res.json(results);
+        if(results.erro){
+            res.status(401).json(results);
+        } else {
+            res.json(results);
+        }
+    } catch (error) {
+        console.log(error);
     }
+    
     
 })
 

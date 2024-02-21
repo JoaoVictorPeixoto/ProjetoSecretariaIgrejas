@@ -1,4 +1,6 @@
 const mysql = require('mysql2/promise');
+const utils = require('./utils');
+const config = require('../configDB.js');
 class db {
 
     constructor(){
@@ -8,10 +10,10 @@ class db {
     async select(sql) {
         try {
             const conection = await mysql.createConnection({
-                host: process.env.DB_HOST,
-                user: process.env.DB_USER,
-                database: process.env.DB_DATABASER,
-                password: process.env.DB_PASSWORD
+                host: config.HOST,
+                user: config.USER,
+                database: config.DATABASE,
+                password: config.PASSWORD
             });
             
             const res = await conection.query(sql);
@@ -22,14 +24,9 @@ class db {
         }
     }
 
-    async insert(sql){
-        let fields = sql.fields
-            , values = sql.values
-            , table = sql.table
-        ;
-        
+    async insert(fields, values, tabela){
         // Caso qualquer parametro obrigatorio esteja faltante, retorna um erro.
-        if(!fields || !values || !table){
+        if(!fields || !values || !tabela){
             return {
                 erro: true,
                 mensagem: 'Parametros obrigatorios faltantes!'
@@ -37,37 +34,52 @@ class db {
         }
 
         // Cria lista de fields textual
-        let fields_textal = ''
+        let fields_textal = '';
         fields.forEach(field => {
-            fields_textal += "'" + field + "',";
+            fields_textal += field + ",";
         });
 
         fields_textal = fields_textal.slice(0, fields_textal.length-1);
 
         // cria lista de value textual
-        for (let i = 0; i < array.length; i++) {
-            
+        let values_textual = '';
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if(utils._.isNumber(value) ||  utils._.isBoolean(value)){
+                values_textual += value + ',';
+            } else if ( utils._.isDate(value) || utils._.isString(value)) {
+                values_textual += "'"+ value + "',";
+            }
             
         }
 
+        values_textual = values_textual.slice(0, values_textual.length-1);
+
         try {
             const conection = await mysql.createConnection({
-                host: process.env.DB_HOST,
-                user: process.env.DB_USER,
-                database: process.env.DB_DATABASER,
-                password: process.env.DB_PASSWORD
+                host: config.HOST,
+                user: config.USER,
+                database: config.DATABASE,
+                password: config.PASSWORD
             });
             
             const res = await conection.query(`
-                INSERT INTO ${table} (${fields_textal})
+                INSERT INTO ${tabela} (${fields_textal})
                 VALUE
-                ()
-
+                (${values_textual})
             `);
-            return res[0];
+
+            return {
+                erro: false,
+                mensagem: 'Usuario cadastrado com sucesso!'
+            }
             
         } catch (error) {
-            return error;
+            console.log(error);
+            return {
+                erro: true,
+                mensagem: 'Falha ao cadastrar novo membro!'
+            }
         }
 
 
