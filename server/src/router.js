@@ -122,8 +122,33 @@ class router {
         return retorno;
     }
 
+    /**
+     * Cadastra um novo membro
+     * @param {*} paramns  - uma objeto contendo uma um objeto sql como propriedade que contem obrigatoriamente a seguinte estrutura
+     *      sql : {
+     *          fields: [...],
+     *          values: [...],
+     *          tabela: 'tabela x'
+     *      }
+     * @returns 
+     */
     async cadastrarMembro(paramns){
-        console.log('cadastrando_membro');
+
+        // caso não exista os parametros obrigatorios, retorna um erro para o chamador.
+        if(!paramns.sql){
+            return {
+                erro: true,
+                mensagem: `Parametro 'sql' obrigatorio não preenchido!`
+            };
+        } else {
+            if(!paramns.sql.fields || !paramns.sql.values, !paramns.sql.tabela){
+                return {
+                    erro: true,
+                    mensagem: 'Parametros obrigatorios não preenchidos!'
+                };
+            }
+        }
+
         try {
             let res = await this.db.insert(paramns.sql.fields, paramns.sql.values, paramns.sql.tabela);
             return res

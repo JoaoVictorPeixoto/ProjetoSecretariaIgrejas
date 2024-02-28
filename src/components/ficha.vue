@@ -32,7 +32,7 @@ function updateFormulario(value){
 }
 
 /**
- * chama função de submit do ficha
+ * chama função de submit da ficha
  */
 function clickSubmit(interacao){
   interacoes.interage_server(formulario_value, interacao);
