@@ -6,6 +6,7 @@ let campo_input_visivel = ref(false)
     , campo_button_visivel = ref(false)
 ;
 const prop = defineProps(['params', 'tipo_campo']);
+const emit = defineEmits(['changCampo']);
 
 let tipo_campo = prop.tipo_campo
         , params = prop.params
@@ -27,11 +28,14 @@ onMounted(() => {
     }
 });
 
+function updateValue(campo){
+    emit('changCampo', campo);
+}
 
 </script>
 
 <template>
-    <campo_input @updateValue="$emit('changCampo', params)" :label="params.label" :type="params.type" :input_id="params.id" v-if="campo_input_visivel" :size_label="params.size_label"/>
+    <campo_input @updateValue="updateValue" :label="params.label" :type="params.type" :input_id="params.id" v-if="campo_input_visivel" :size_label="params.size_label"/>
     <buttonExt :label="params.label" :button_id="params.id" :button_submit="params.submit" :button_interacao="params.interacao" v-if="campo_button_visivel"
          @focusButton="$emit('focusButton')"
          @blurButton="$emit('blurButton')"

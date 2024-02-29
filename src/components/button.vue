@@ -1,9 +1,17 @@
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, inject, watch} from 'vue'
 import style from '../styles/styles';
 
 // Classe generica para botões
 let btn = style.class_btn;
+
+let force_submit = inject('forcaSubmit');
+
+watch(force_submit, () => {
+  if(force_submit.value && props.button_submit){
+    click();
+  }
+});
 
 let props = defineProps({
   label: '',

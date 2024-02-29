@@ -1,3 +1,4 @@
+import alerta from '../components/alertas'
 class interacoes {
     
     /**
@@ -9,7 +10,7 @@ class interacoes {
                 method: "POST",
                 body: JSON.stringify({
                     interacao: interacao,
-                    paramns
+                    pacote: paramns
                 }),
                 headers: {
                     "Content-type": "application/json; charset=UTF-8"
@@ -18,7 +19,7 @@ class interacoes {
 
             let resposta = await response.json();
             
-            console.log(resposta.mensagem);
+            new alerta().emiteAlerta(resposta.mensagem, resposta.erro ? 'error' : 'success', 1500);
 
             return resposta;
             

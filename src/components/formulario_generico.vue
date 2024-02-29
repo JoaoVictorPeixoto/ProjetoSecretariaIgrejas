@@ -60,7 +60,7 @@ function clickButton(id, button_submit, interacao){
 // Atualiza o value do formulario e emite o event de chang do formulario.
 function changCampos(campo){
     for (let i = 0; i < rows_campos.length; i++) {
-        for(let j; j < rows_campos[i].length ; j++){
+        for(let j = 0; j < rows_campos[i].length ; j++){
             if(rows_campos[i][j].id === campo.id){
                 rows_campos[i][j].id = campo.id;
                 rows_campos[i][j].label = campo.label;
@@ -96,7 +96,7 @@ function changCampos(campo){
     <div class="d-flex flex-row-reverse mt-5">
         <template v-for="button in rows_buttons" :key="button.id">
             <div :class="'col-'+button.size+' d-flex align-items-end'">
-                <campo 
+                <campo
                     :tipo_campo="button.type"
                     :params="button"
                     @focusButton="$emit('focusButton')"

@@ -135,13 +135,13 @@ class router {
     async cadastrarMembro(paramns){
 
         // caso não exista os parametros obrigatorios, retorna um erro para o chamador.
-        if(!paramns.sql){
+        if(!paramns.pacote.sql){
             return {
                 erro: true,
                 mensagem: `Parametro 'sql' obrigatorio não preenchido!`
             };
         } else {
-            if(!paramns.sql.fields || !paramns.sql.values, !paramns.sql.tabela){
+            if(!paramns.pacote.sql.fields || !paramns.pacote.sql.values){
                 return {
                     erro: true,
                     mensagem: 'Parametros obrigatorios não preenchidos!'
@@ -149,8 +149,11 @@ class router {
             }
         }
 
+        // cria o id do membro
+        
+
         try {
-            let res = await this.db.insert(paramns.sql.fields, paramns.sql.values, paramns.sql.tabela);
+            let res = await this.db.insert(paramns.pacote.sql.fields, paramns.pacote.sql.values, 'membros');
             return res
         } catch (error) {
             console.log(error);
