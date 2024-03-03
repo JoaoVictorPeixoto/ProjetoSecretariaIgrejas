@@ -1,20 +1,19 @@
 <script setup>
-import {ref, watch, inject} from 'vue'
+import {ref, watch, inject, onMounted} from 'vue'
 
 let props = defineProps({
   label: '',
-  type: 'text',
-  input_id: '',
-  size_label: 1
+  id: '',
+  size_label: 1,
+  options: []
 })
 
 const emit = defineEmits(['updateValue']);
 
-let inputLabel = ref(props.label)
+let label = ref(props.label)
     , limpa_formulario = inject('limpa_formulario')
-    , input_value = defineModel('input_value')
-    , input_type = ref(props.type)
-    , input_id = ref(props.input_id)
+    , id = ref(props.id)
+    , value = defineModel()
 ;
 
 watch(limpa_formulario, () => {
@@ -23,17 +22,31 @@ watch(limpa_formulario, () => {
   }
 });
 
+/**
+ * Seta valor 'default' do select o option que possuir a propriedade selected true
+ */
+onMounted(() => {
+    let option = props.options.find(option => {
+      return option.selected === true;
+    });
+
+    value.value = option.id;
+});
+
 // Seta valor do campo para null
 function limpaCampo(){
   input_value.value = null;
   changValue();
 }
 
+/**
+ * Evento de mudança de valor
+ */
 function changValue(){
   let campo = {
-    label :  inputLabel.value,
-    value :  input_value.value,
-    id    :  input_id.value,
+    label :  label.value,
+    value :  value.value,
+    id    :  id.value,
   }
   emit('updateValue', campo);
 }
@@ -43,14 +56,15 @@ function changValue(){
 
 <template>
 <div class='form-floating'>
-    <select :type="input_type" name="input_text" class='form-select form-select-sm margem' 
-    :id="input_id" :placeholder="inputLabel">
-        <option selected>''</option>
-        <option value='1'>1</option>
-        <option value='2'>2</option>
-        <option value='3'>3</option>
+    <select :onchange="changValue" name="select" class='form-select form-select-sm margem' 
+    :id="id" v-model="value">
+        <template v-for="option in props.options" :key="option.id">
+          <option :disabled="option.disabled" :selected="option.selected" :value="option.id">{{option.value}}</option>
+        </template>
+        
     </select>
-    <label :for="input_id">{{ inputLabel }}</label>
+    <label :for="id">{{ label }}</label>
+    
 </div>
 </template> 
 
