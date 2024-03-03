@@ -1,5 +1,5 @@
 <script setup>
-import {reactive, ref, onMounted} from 'vue';
+import {reactive, onMounted} from 'vue';
 import carregamentoPaginas from '../utilities/carregamento_paginas'
 import style from '../styles/styles';
 import campo from './campos.vue'
@@ -72,10 +72,6 @@ function changCampos(campo){
   emit('updateFormulario', rows_campos);
 }
 
-
-
-// <inputText @updateValue="changCampos" :label="campo.label" :type="campo.type" :input_id="campo.id"/>
-
 </script>
 
 <template>
@@ -86,8 +82,6 @@ function changCampos(campo){
                     :tipo_campo="campo.type"
                     :params="campo"
                     @changCampo="changCampos"
-                    @focusButton="$emit('focusButton')"
-                    @blurButton="$emit('blurButton')"
                     @clickButton="clickButton"
                 />
             </div>

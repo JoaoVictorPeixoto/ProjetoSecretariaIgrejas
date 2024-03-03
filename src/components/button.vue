@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, inject, watch} from 'vue'
+import {inject, watch} from 'vue'
 import style from '../styles/styles';
 
 // Classe generica para botões

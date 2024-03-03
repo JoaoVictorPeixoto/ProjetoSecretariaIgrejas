@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from 'vue'
+import {ref, watch, inject} from 'vue'
 
 let props = defineProps({
   label: '',
@@ -8,20 +8,32 @@ let props = defineProps({
   size_label: 1
 })
 
-let class_label = ref(`label fs-${props.size_label}`);
 const emit = defineEmits(['updateValue']);
 
 let inputLabel = ref(props.label)
-    , inputValue = defineModel()
+    , limpa_formulario = inject('limpa_formulario')
+    , input_value = defineModel('input_value')
     , input_type = ref(props.type)
     , input_id = ref(props.input_id)
 ;
 
+watch(limpa_formulario, () => {
+  if(limpa_formulario.value){
+    limpaCampo();
+  }
+});
+
+// Seta valor do campo para null
+function limpaCampo(){
+  input_value.value = null;
+  changValue();
+}
+
 function changValue(){
   let campo = {
     label :  inputLabel.value,
-    value :  inputValue.value,
-    id    :     input_id.value,
+    value :  input_value.value,
+    id    :  input_id.value,
   }
   emit('updateValue', campo);
 }
@@ -31,7 +43,7 @@ function changValue(){
 
 <template>
 <div class='form-floating'>
-    <input :type="input_type" name="input_text" class='form-control form-control-md border-dark input' v-model="inputValue" @input="changValue" :id="input_id" :placeholder="inputLabel">
+    <input :type="input_type" name="input_text" class='form-control form-control-md border-dark input' v-model="input_value" @input="changValue" :id="input_id" :placeholder="inputLabel">
     <label :for="input_id">{{ inputLabel }}</label>
 </div>
 </template> 

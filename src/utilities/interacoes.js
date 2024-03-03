@@ -1,4 +1,3 @@
-import alerta from '../components/alertas'
 class interacoes {
     
     /**
@@ -19,12 +18,11 @@ class interacoes {
 
             let resposta = await response.json();
             
-            new alerta().emiteAlerta(resposta.mensagem, resposta.erro ? 'error' : 'success', 1500);
-
             return resposta;
             
         } catch (error) {
             console.log(error);
+            return error;
         }
     }
 

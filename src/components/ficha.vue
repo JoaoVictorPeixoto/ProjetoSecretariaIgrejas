@@ -1,19 +1,21 @@
 <script setup>
-import { ref, onMounted, provide} from 'vue'
+import { ref, provide} from 'vue'
 import formulario from './formulario_generico.vue'
 import '../styles/formularios.css'
 import style from  '../styles/styles'
-import utils from '../utilities/interacoes'
+import alerta from '../components/alertas'
 import interacoes from '../utilities/interacoes'
 
 let pagina = ref('ficha_membros')
   , furmulario_style = style.class_formulario+' formulario'
   , focus_button_submit = false
   , formulario_value = {}
-  , forca_submit = ref(false);
+  , forca_submit = ref(false)
+  , limpa_formulario = ref(false)
 ;
 
 provide('forcaSubmit', forca_submit);
+provide('limpa_formulario', limpa_formulario);
 
 // Chamada quando o campo button receber foco
 function focusButton(){
@@ -37,10 +39,19 @@ function updateFormulario(value){
 /**
  * chama função de submit da ficha
  */
-function clickSubmit(interacao){
-  let pacote = preparaPacote(formulario_value);
-  interacoes.interage_server(pacote, interacao);
+ async function clickSubmit(interacao){
+  limpa_formulario.value = false;
+  let pacote = preparaPacote(formulario_value)
+    , retorno = await interacoes.interage_server(pacote, interacao)
+  ;
+
+  new alerta().emiteAlerta(retorno.mensagem, retorno.erro ? 'error' : 'success', 2000);
+
   forca_submit.value = false;
+
+  if(!retorno.erro){
+    limpa_formulario.value = true;
+  }
 }
 
 /**
@@ -74,7 +85,9 @@ function preparaPacote(formulario_value){
 }
 
 function forcaSubmit(){
-  forca_submit.value = true;
+  if(!focus_button_submit){
+    forca_submit.value = true;
+  }
 }
 
 </script>
