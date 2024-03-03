@@ -25,6 +25,11 @@ const router = createRouter({
       name: 'reintegracao_membro',
       component: () => import('../pages/reintegracao.vue')
     },
+    {
+      path: '/testeCampos',
+      name: 'reintegracao_membro',
+      component: () => import('../pages/teste_campos.vue')
+    },
     
   ]
 })

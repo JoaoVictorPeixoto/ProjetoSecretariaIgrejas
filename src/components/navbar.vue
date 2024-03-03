@@ -41,6 +41,7 @@ function redirecionar(path){
                   <li><a class="dropdown-item"  @click="redirecionar('reintegracao')">Reintegração de membro</a></li>
                   <li><a class="dropdown-item" href="#">Falecimento</a></li>
                   <li><a class="dropdown-item" href="#">Suspensão</a></li>
+                  <li><a class="dropdown-item"  @click="redirecionar('testeCampos')">teste campos</a></li>
                 </ul>
               </li>
               <li class="nav-item">
