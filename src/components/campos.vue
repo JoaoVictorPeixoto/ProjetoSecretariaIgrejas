@@ -1,9 +1,12 @@
 <script setup>
 import campo_input from './input.vue';
 import buttonExt from './button.vue'
+import selectExt from './select.vue'
+
 import {onMounted, ref} from 'vue'
 let campo_input_visivel = ref(false)
     , campo_button_visivel = ref(false)
+    , campo_select_visivel = ref(false)
 ;
 const prop = defineProps(['params', 'tipo_campo']);
 const emit = defineEmits(['changCampo']);
@@ -20,11 +23,18 @@ onMounted(() => {
         case 'date':
         case 'number':
             campo_input_visivel.value = true;
-            campo_button_visivel.value = false
+            campo_button_visivel.value = false;
+            campo_select_visivel.value = false;
             break;
         case 'button':
             campo_input_visivel.value = false;
-            campo_button_visivel.value = true
+            campo_button_visivel.value = true;
+            campo_select_visivel.value = false;
+            break;
+        case 'select':
+            campo_select_visivel.value = true;
+            campo_input_visivel.value = false;
+            campo_button_visivel.value = false;
             break;
     }
 });
@@ -42,6 +52,11 @@ function updateValue(campo){
          @focusButton="$emit('focusButton')"
          @blurButton="$emit('blurButton')"
          @clickButton="(id, submit_button, interacao) => {$emit('clickButton', id, submit_button, interacao)}"
+    />
+    <selectExt
+        @updateValue="updateValue" :label="params.label" :id="params.id"
+        v-model:value="value" :size_label="params.size_label" :options="params.options"
+        v-if="campo_select_visivel" 
     />
 </template>
 

@@ -53,7 +53,7 @@ function redirecionar(path){
             </form>
           </div>
         </div>
-      </nav>
+    </nav>
 </template>
 
 <style scoped>

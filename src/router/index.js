@@ -27,7 +27,7 @@ const router = createRouter({
     },
     {
       path: '/testeCampos',
-      name: 'reintegracao_membro',
+      name: 'testeCampos',
       component: () => import('../pages/teste_campos.vue')
     },
     

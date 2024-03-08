@@ -23,19 +23,21 @@ watch(limpa_formulario, () => {
 });
 
 /**
- * Seta valor 'default' do select o option que possuir a propriedade selected true
+ * Seta valor 'default' do select, que será o option que possuir a propriedade selected true
  */
 onMounted(() => {
     let option = props.options.find(option => {
       return option.selected === true;
     });
 
-    value.value = option.id;
+    if(option){
+      value.value = option.id;
+    }
 });
 
 // Seta valor do campo para null
 function limpaCampo(){
-  input_value.value = null;
+  value.value = null;
   changValue();
 }
 
@@ -56,7 +58,7 @@ function changValue(){
 
 <template>
 <div class='form-floating'>
-    <select :onchange="changValue" name="select" class='form-select form-select-sm margem' 
+    <select :onchange="changValue" name="select" class='form-select form-select margem border-dark input' 
     :id="id" v-model="value">
         <template v-for="option in props.options" :key="option.id">
           <option :disabled="option.disabled" :selected="option.selected" :value="option.id">{{option.value}}</option>
