@@ -32,9 +32,15 @@ let options = [
         <selectExt label="teste" :options="options"/>
     </div>
     
+    <div class="red">
+        bla bla
+    </div>
 
 </template>
 
 <style>
-
+.red{
+    background-color: red;
+    width: 80vw;
+}
 </style>

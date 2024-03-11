@@ -333,7 +333,7 @@ class fichaMembro {
                     },
                 ]
             },
-        ]
+                    ]
         this.buttons = [
             {
                 id: 'submit',

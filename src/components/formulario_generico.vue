@@ -12,9 +12,6 @@ let rows_campos = reactive([])
 // eventos proprios do formulario
 const emit = defineEmits(['updateFormulario', 'clickButtonSubmit']);
 
-// Classe generica para botões
-let btn = style.class_btn;
-
 // Campos do formulario
 let props = defineProps(['pagina']);
 
