@@ -41,17 +41,22 @@ function updateFormulario(value){
  */
  async function clickSubmit(interacao){
   limpa_formulario.value = false;
-  let pacote = preparaPacote(formulario_value)
-    , retorno = await interacoes.interage_server(pacote, interacao)
-  ;
+  let pacote = preparaPacote(formulario_value);
 
-  new alerta().emiteAlerta(retorno.mensagem, retorno.erro ? 'error' : 'success', 2000);
+  if(!pacote.erro){
+    let retorno = await interacoes.interage_server(pacote, interacao);
 
-  forca_submit.value = false;
+    new alerta().emiteAlerta(retorno.mensagem, retorno.erro ? 'error' : 'success', 2000);
 
-  if(!retorno.erro){
-    limpa_formulario.value = true;
+    forca_submit.value = false;
+
+    if(!retorno.erro){
+      limpa_formulario.value = true;
+    }
+  } else {
+    new alerta().emiteAlerta(pacote.mensagem_erro,'error', 2000);
   }
+  
 }
 
 /**
@@ -74,6 +79,12 @@ function preparaPacote(formulario_value){
       // caso o campo tenha como value um string vazio '', convertemos em null antes de mandarmos o pacote
       if(formulario_value[i][j].value === ''){
         formulario_value[i][j].value = null;
+      }
+
+      // Caso exista algum campo com erro, aborta envio de pacote
+      if(formulario_value[i][j].erro !== '' && formulario_value[i][j].erro !== undefined){
+        pacote_retorno.erro = true;
+        pacote_retorno.mensagem_erro = formulario_value[i][j].erro || 'Campos com erros!';
       }
       
       pacote_retorno.sql.values.push(formulario_value[i][j].value);

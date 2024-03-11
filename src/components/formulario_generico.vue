@@ -62,6 +62,7 @@ function changCampos(campo){
                 rows_campos[i][j].id = campo.id;
                 rows_campos[i][j].label = campo.label;
                 rows_campos[i][j].value = campo.value;
+                rows_campos[i][j].erro = campo.erro;
             }
         }
     }

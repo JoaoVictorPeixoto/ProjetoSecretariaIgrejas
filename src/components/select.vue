@@ -1,5 +1,6 @@
 <script setup>
 import {ref, watch, inject, onMounted} from 'vue'
+import style from '../styles/styles';
 
 let props = defineProps({
   label: '',
@@ -14,11 +15,22 @@ let label = ref(props.label)
     , limpa_formulario = inject('limpa_formulario')
     , id = ref(props.id)
     , value = defineModel()
+    , mensagem_erro = ref('')
+    , erro_campo = ''
+    , erro_mensagem = style.mensagem_erro.erro_mensagem
 ;
 
 watch(limpa_formulario, () => {
   if(limpa_formulario.value){
     limpaCampo();
+  }
+});
+
+watch(mensagem_erro, () => {
+  if(!!mensagem_erro.value){
+    erro_campo = style.mensagem_erro.erro_campo
+  } else {
+    erro_campo = ''
   }
 });
 
@@ -49,7 +61,10 @@ function changValue(){
     label :  label.value,
     value :  value.value,
     id    :  id.value,
+    erro  :  mensagem_erro.value 
   }
+  mensagem_erro.value = '';
+
   emit('updateValue', campo);
 }
 
@@ -58,7 +73,7 @@ function changValue(){
 
 <template>
 <div class='form-floating'>
-    <select :onchange="changValue" name="select" class='form-select form-select margem border-dark input' 
+    <select :onchange="changValue" name="select" class='form-select form-select margem border-dark' :style="erro_campo"
     :id="id" v-model="value">
         <template v-for="option in props.options" :key="option.id">
           <option :disabled="option.disabled" :selected="option.selected" :value="option.id">{{option.value}}</option>
@@ -68,6 +83,7 @@ function changValue(){
     <label :for="id">{{ label }}</label>
     
 </div>
+<label :for="id" v-if="!!mensagem_erro" :style="erro_mensagem" >{{ mensagem_erro }}</label>
 </template> 
 
 <style scoped>

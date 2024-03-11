@@ -149,9 +149,6 @@ class router {
             }
         }
 
-        // cria o id do membro
-        
-
         try {
             let res = await this.db.insert(paramns.pacote.sql.fields, paramns.pacote.sql.values, 'membros');
             return res

@@ -20,7 +20,8 @@ class fichaMembro {
                 value: '',
                 size: 12,
                 type: 'text',
-                size_label: 3
+                size_label: 3,
+                obrigatorio: true
             },
             {
                 id: 'meb_sexo',
@@ -29,6 +30,7 @@ class fichaMembro {
                 size: 2,
                 type: 'select',
                 size_label: 3,
+                obrigatorio: true,
                 options: [
                     {
                         id: 'M',
@@ -48,6 +50,7 @@ class fichaMembro {
                 id: 'meb_est_civil',
                 label: 'Estado Civil',
                 value: '',
+                obrigatorio: true,
                 size: 4,
                 type: 'select',
                 size_label: 3,
@@ -85,6 +88,7 @@ class fichaMembro {
                 size: 3,
                 type: 'date',
                 size_label: 3,
+                obrigatorio: true,
             },
             {
                 id: 'meb_data_batismo',
@@ -92,7 +96,8 @@ class fichaMembro {
                 value: '',
                 size: 3,
                 type: 'date',
-                size_label: 3
+                size_label: 3,
+                obrigatorio: true,
             },
             {
                 id: 'meb_nome_pai',
@@ -100,7 +105,8 @@ class fichaMembro {
                 value: '',
                 size: 12,
                 type: 'text',
-                size_label: 3
+                size_label: 3,
+                obrigatorio: true,
             },
             {
                 id: 'meb_nome_mae',
@@ -108,7 +114,8 @@ class fichaMembro {
                 value: '',
                 size: 12,
                 type: 'text',
-                size_label: 3
+                size_label: 3,
+                obrigatorio: true,
             },
             {
                 id: 'meb_escolaridade',
@@ -183,7 +190,8 @@ class fichaMembro {
                 value: '',
                 size: 8,
                 type: 'text',
-                size_label: 3
+                size_label: 3,
+                obrigatorio: true,
             },
             {
                 id: 'meb_uf',
@@ -191,7 +199,8 @@ class fichaMembro {
                 value: '',
                 size: 4,
                 type: 'text',
-                size_label: 3
+                size_label: 3,
+                obrigatorio: true,
             },
             {
                 id: 'meb_end',
@@ -255,7 +264,8 @@ class fichaMembro {
                 value: '',
                 size: 6,
                 type: 'text',
-                size_label: 3
+                size_label: 3,
+                obrigatorio: true,
             },
             {
                 id: 'meb_rg',
@@ -263,7 +273,8 @@ class fichaMembro {
                 value: '',
                 size: 6,
                 type: 'text',
-                size_label: 3
+                size_label: 3,
+                obrigatorio: true,
             },
             {
                 id: 'meb_reg_id',
@@ -272,6 +283,7 @@ class fichaMembro {
                 size: 4,
                 type: 'select',
                 size_label: 3,
+                obrigatorio: true,
                 options: [
                     {
                         id: 1,
@@ -288,6 +300,7 @@ class fichaMembro {
                 size: 4,
                 type: 'select',
                 size_label: 3,
+                obrigatorio: true,
                 options: [
                     {
                         id: 1,
