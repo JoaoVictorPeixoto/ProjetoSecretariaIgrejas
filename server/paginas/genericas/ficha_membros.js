@@ -361,6 +361,59 @@ class fichaMembro {
         ]
     }
 
+    /**
+     * Faz verificações de regra de negocio.
+     * @param {*} campos - campos do formulario vindo client, já com seu value que será mandado para a persistencia
+     */
+    async verify(campos){
+        let campos_com_erro = [];
+
+        for (let i = 0; i < campos.length; i++) {
+            let campo = campos[i]
+                , definicao_campo = this.campos.find(campo_definicao => {
+                    return campo_definicao.id === campo.id
+                });
+            ;
+            
+            // verifica se existe definição para o campo
+            if(definicao_campo === undefined){
+                console.log('campo ' + campo.id + '( ' + campo.label + ' ) não encontrado');
+                continue
+            }
+
+            // verifica obrigatoriedade do campo
+            let res = this.__verificaObrigatoriedade(campo, definicao_campo);
+            if(res.erro){
+                campo.erro = true;
+                campo.mensagem = res.mensagem;
+                campos_com_erro.push(campo);
+            }
+
+        }
+
+        return campos_com_erro.length ? campos_com_erro : null;
+    }
+
+    /**
+     * Verifica se o campo é obrigatorio. Caso ele seja obrigatorio e não tenha valor, retorna erro para o campo.
+     * @param {*} campo 
+     * @param {*} definicao_campo 
+     * @returns 
+     */
+    __verificaObrigatoriedade(campo, definicao_campo){
+        let retorno = {
+            erro: false,
+            mensagem: ''
+        };
+        
+        if(!!definicao_campo.obrigatorio && !campo.value){
+            retorno.erro = true;
+            retorno.mensagem = 'Preenchimento obrigatorio!';
+        }
+
+        return retorno;
+    }
+
 }
 
 module.exports = fichaMembro;

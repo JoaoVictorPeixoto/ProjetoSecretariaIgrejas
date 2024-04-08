@@ -76,17 +76,7 @@ class router {
             retorno.mensagem = 'Pagina não encontrada para recuperação de campos!'
         }
 
-        try {
-            pagina_aquivo = require(`../paginas/${paramns.pagina}`);
-        } catch (error) {
-            
-        }
-        
-        if(!pagina_aquivo){
-            pagina_aquivo = require(`../paginas/genericas/${paramns.pagina}`);
-        }
-
-        let pagina = new pagina_aquivo();
+        let pagina = await this.__carrega_pagina(paramns.pagina);
         pagina.setup();
         retorno.campos = pagina.campos;
 
@@ -105,17 +95,8 @@ class router {
             retorno.mensagem = 'Pagina não encontrada para recuperação de Botões!'
         }
 
-        try {
-            pagina_aquivo = require(`../paginas/${paramns.pagina}`);
-        } catch (error) {
-            
-        }
-        
-        if(!pagina_aquivo){
-            pagina_aquivo = require(`../paginas/genericas/${paramns.pagina}`);
-        }
 
-        let pagina = new pagina_aquivo();
+        let pagina = await this.__carrega_pagina(paramns.pagina);
         pagina.setup();
         retorno.buttons = pagina.buttons;
 
@@ -141,25 +122,54 @@ class router {
                 mensagem: `Parametro 'sql' obrigatorio não preenchido!`
             };
         } else {
-            if(!paramns.pacote.sql.fields || !paramns.pacote.sql.values){
+            if(!paramns.pacote.sql.fields || !paramns.pacote.sql.values || !paramns.pacote.campos){
                 return {
                     erro: true,
                     mensagem: 'Parametros obrigatorios não preenchidos!'
                 };
             }
-        }
+        }  
+    
+        let pagina = await this.__carrega_pagina(paramns.pacote.pagina);
+        // valida campos
+        pagina.setup();
+        let campos_verificados = await pagina.verify(paramns.pacote.campos);
 
         try {
+
+            if(campos_verificados !== null){
+                throw ''
+            }
+
             let res = await this.db.insert(paramns.pacote.sql.fields, paramns.pacote.sql.values, 'membros');
             return res
         } catch (error) {
             console.log(error);
             return {
                 erro: true,
-                mensagem: 'Falha ao Cadastrar Usuario'
+                mensagem: 'Falha ao Cadastrar Usuario',
+                campos: campos_verificados
             }
         }
         
+    }
+
+
+    async __carrega_pagina(nome_pagina){
+        let pagina_aquivo;
+
+        try {
+            pagina_aquivo = require(`../paginas/${nome_pagina}`);
+        } catch (error) {
+            
+        }
+        
+        if(!pagina_aquivo){
+            pagina_aquivo = require(`../paginas/genericas/${nome_pagina}`);
+        }
+
+        let pagina = new pagina_aquivo();
+        return pagina;
     }
 }
 

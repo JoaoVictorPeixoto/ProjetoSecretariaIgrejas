@@ -29,6 +29,10 @@ server.post('/interacao', async (req, res) => {
         }
     } catch (error) {
         console.log(error);
+        res.status(500).json({
+            erro: true,
+            mensagem: "Erro interno: " + error.code
+        });
     }
     
     

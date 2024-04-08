@@ -12,12 +12,24 @@ let props = defineProps({
 const emit = defineEmits(['updateValue']);
 
 let label = ref(props.label)
-    , limpa_formulario = inject('limpa_formulario')
     , id = ref(props.id)
     , value = defineModel()
-    , mensagem_erro = ref('')
     , erro_campo = ''
     , erro_mensagem = style.mensagem_erro.erro_mensagem
+    , mensagem_erro = ref('')
+;
+
+defineExpose({
+  id,
+  value,
+  erro_campo,
+  mensagem_erro,
+  label
+})
+
+// inject 
+let limpa_formulario = inject('limpa_formulario')
+  , erro = inject('mensagem_erro')
 ;
 
 watch(limpa_formulario, () => {
@@ -26,13 +38,6 @@ watch(limpa_formulario, () => {
   }
 });
 
-watch(mensagem_erro, () => {
-  if(!!mensagem_erro.value){
-    erro_campo = style.mensagem_erro.erro_campo
-  } else {
-    erro_campo = ''
-  }
-});
 
 /**
  * Seta valor 'default' do select, que será o option que possuir a propriedade selected true
@@ -45,6 +50,8 @@ onMounted(() => {
     if(option){
       value.value = option.id;
     }
+
+    changValue();
 });
 
 // Seta valor do campo para null

@@ -1,5 +1,5 @@
 <script setup>
-import {reactive, onMounted} from 'vue';
+import {reactive, onMounted, ref} from 'vue';
 import carregamentoPaginas from '../utilities/carregamento_paginas'
 import style from '../styles/styles';
 import campo from './campos.vue'
@@ -8,6 +8,8 @@ import campo from './campos.vue'
 let rows_campos = reactive([])
     , rows_buttons = reactive([])
 ;
+
+const campos = ref(null);
 
 // eventos proprios do formulario
 const emit = defineEmits(['updateFormulario', 'clickButtonSubmit']);
@@ -70,6 +72,10 @@ function changCampos(campo){
   emit('updateFormulario', rows_campos);
 }
 
+defineExpose({
+    campos
+})
+
 </script>
 
 <template>
@@ -77,6 +83,7 @@ function changCampos(campo){
         <template v-for="campo in rows_campos[index]" :key="campo.id">
             <div :class="'col-'+campo.size">
                 <campo 
+                    ref="campos"
                     :tipo_campo="campo.type"
                     :params="campo"
                     @changCampo="changCampos"
