@@ -34,10 +34,11 @@
             // Ajustas datas
             for (let i = 0; i < res.length; i++) {
                 res[i].meb_data_nasc = new Date(res[i].meb_data_nasc).toLocaleDateString();
+                res[i].meb_data_batismo = new Date(res[i].meb_data_batismo).toLocaleDateString();
                 
             }
 
-            return [['Nome', 'Idade'],res];
+            return [['Nome', 'Idade', 'Data de Batismo', 'Número de Row'],res];
         }
 
     }
@@ -58,6 +59,8 @@
                 <tr v-for="(user, index_linha) in tabela" :key="index_linha">
                     <td :scope="index_linha === 0 ? 'row' : ''">{{user.meb_nome}}</td>
                     <td>{{user.meb_data_nasc}}</td>
+                    <td>{{user.meb_data_batismo}}</td>
+                    <td>{{user.meb_rol}}</td>
                 </tr> 
             </tbody>
         </table>
