@@ -30,6 +30,11 @@ const router = createRouter({
       name: 'testeCampos',
       component: () => import('../pages/teste_campos.vue')
     },
+    {
+      path: '/listaMembros',
+      name: 'listaMembros',
+      component: () => import('../pages/lista_membros.vue')
+    },
     
   ]
 })

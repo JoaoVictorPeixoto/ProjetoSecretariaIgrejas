@@ -36,7 +36,7 @@ function redirecionar(path){
                   Membros
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Listas de Membros</a></li>
+                  <li><a class="dropdown-item" @click="redirecionar('listaMembros')">Listas de Membros</a></li>
                   <li><a class="dropdown-item"  @click="redirecionar('uniao')">União de Membros</a></li>
                   <li><a class="dropdown-item"  @click="redirecionar('reintegracao')">Reintegração de membro</a></li>
                   <li><a class="dropdown-item" href="#">Falecimento</a></li>

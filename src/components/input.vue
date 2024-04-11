@@ -52,13 +52,13 @@
   }
 
   function changValue(){
+    mensagem_erro.value = '';
     let campo = {
       label :  label.value,
       value :  value.value,
       id    :  id.value,
       erro  :  mensagem_erro.value 
     }
-    mensagem_erro.value = '';
 
     emit('updateValue', campo);
     

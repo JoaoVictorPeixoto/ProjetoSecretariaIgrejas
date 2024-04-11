@@ -171,6 +171,35 @@ class router {
         let pagina = new pagina_aquivo();
         return pagina;
     }
+
+    /**
+     * Busca todos os registros de uma tabela especifica
+     */
+    async buscaRegistros(paramns){
+        if(!paramns.pacote.table){
+            return {
+                erro: true,
+                mensagem: 'Tabela não identificada'
+            }
+        }
+
+        try {
+            let tabela = paramns.pacote.table
+                , res = await this.db.select(`
+                    SELECT * FROM ${tabela}
+                `)
+            ;
+
+            return res;
+        } catch (error){
+            console.log(error);
+            return {
+                erro: true,
+                mensagem: 'Falha interna ao buscar registros!'
+            }
+        }
+        
+    }
 }
 
 module.exports = router;

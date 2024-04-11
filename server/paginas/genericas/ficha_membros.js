@@ -208,7 +208,8 @@ class fichaMembro {
                 value: '',
                 size: 6,
                 type: 'text',
-                size_label: 3
+                size_label: 3,
+                obrigatorio: true
             },
             {
                 id: 'meb_end_num',

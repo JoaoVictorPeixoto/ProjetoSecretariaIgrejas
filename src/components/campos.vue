@@ -1,13 +1,15 @@
 <script setup>
+
 import campo_input from './input.vue';
 import buttonExt from './button.vue'
 import selectExt from './select.vue'
-
 import {onMounted, ref} from 'vue'
+
 let campo_input_visivel = ref(false)
     , campo_button_visivel = ref(false)
     , campo_select_visivel = ref(false)
 ;
+
 const prop = defineProps(['params', 'tipo_campo']);
 const emit = defineEmits(['changCampo']);
 const input = ref(null)
