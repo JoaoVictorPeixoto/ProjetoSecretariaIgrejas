@@ -15,7 +15,6 @@ let furmulario_style = style.class_formulario + " formulario";
         <h1 style="text-align: center">Teste Lista Membros</h1>
         <tableExt/>
     </div>
-
 </template>
 
 <style>

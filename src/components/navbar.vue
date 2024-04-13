@@ -1,5 +1,5 @@
 <script setup>
-import { useRouter, onBeforeRouteLeave} from 'vue-router'
+import { useRouter} from 'vue-router'
 
 // instancia do router
 const router = useRouter();

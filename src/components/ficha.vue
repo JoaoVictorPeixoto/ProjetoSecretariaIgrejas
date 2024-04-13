@@ -142,6 +142,10 @@ function forcaSubmit() {
     forca_submit.value = true;
   }
 }
+
+defineExpose({
+  formulario_componente
+})
 </script>
 
 <template>

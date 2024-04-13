@@ -35,6 +35,12 @@ const router = createRouter({
       name: 'listaMembros',
       component: () => import('../pages/lista_membros.vue')
     },
+    {
+      path: '/editarMembro',
+      name: 'editarMembro',
+      component: () => import('../pages/editar_membro.vue')
+    },
+    
     
   ]
 })

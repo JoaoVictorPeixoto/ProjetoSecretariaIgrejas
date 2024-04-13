@@ -2,12 +2,27 @@
 
     import {onMounted, ref} from 'vue'
     import interacoes from "../utilities/interacoes";
-    import alerta from "../components/alertas";
+    import alerta from "./alertas";
+    import {useRouter, onBeforeRouteLeave} from 'vue-router';
 
     let tabela = ref([])
         , cabecario = ref([])
         , style_col = 'scope="row"'
+        , meb_id = ''
     ;
+
+    // instancia do router
+    const router = useRouter();
+
+    /**
+     * Antes de mudarmos de pagisn, caso o to seja a pagina de edição de membro, salvo temporariamente o id
+     * do membro para que suas informações sejam recuperadas.
+     */
+    onBeforeRouteLeave (async (to, from) => {
+        if(to.name === 'editarMembro'){
+            sessionStorage.setItem('meb_id', meb_id);
+        }
+    });
 
     //#region :: Life Hooks
 
@@ -38,9 +53,15 @@
                 
             }
 
-            return [['Nome', 'Idade', 'Data de Batismo', 'Número de Row'],res];
+            return [['Nome', 'Data de Nascimento', 'Data de Batismo', 'Número de Rol', ''],res];
         }
 
+    }
+
+    function editarMembro(membro, index_linha){
+        console.log('Clicou na linha ' + index_linha + ' - Nome: ' + membro.meb_nome);
+        meb_id = membro.meb_id;
+        router.push('editarMembro');
     }
 
     //#endregion
@@ -49,25 +70,35 @@
 
 <template>
     <div>
-        <table class="table table-striped table-hover table-bordered border-dark">
+        <table class="table table-hover table-bordered border-dark">
             <thead>
                 <tr>
                     <th scope="col" v-for="(celula, index) in cabecario" :key="index">{{celula}}</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(user, index_linha) in tabela" :key="index_linha">
-                    <td :scope="index_linha === 0 ? 'row' : ''">{{user.meb_nome}}</td>
-                    <td>{{user.meb_data_nasc}}</td>
-                    <td>{{user.meb_data_batismo}}</td>
-                    <td>{{user.meb_rol}}</td>
+                <tr v-for="(membro, index_linha) in tabela" :key="index_linha">
+                    <td :scope="index_linha === 0 ? 'row' : ''">{{membro.meb_nome}}</td>
+                    <td>{{membro.meb_data_nasc}}</td>
+                    <td>{{membro.meb_data_batismo}}</td>
+                    <td>{{membro.meb_rol}}</td>
+                    <td @click="editarMembro(membro, index_linha)" class="editar">Editar</td>
                 </tr> 
             </tbody>
         </table>
     </div>
-
 </template>
 
 <style>
+.editar:hover{
+    background-color: rgb(115, 180, 255) !important;
+}
+
+.editar{
+    text-align:     center;
+    font-weight:    bolder;
+    background-color: rgb(216, 235, 255) !important;
+    cursor: pointer;
+}
 
 </style>

@@ -200,6 +200,40 @@ class router {
         }
         
     }
+
+    async recuperaRegistro(paramns){
+        if(!paramns.pacote.id || !paramns.pacote.table || !paramns.pacote.chave){
+            return {
+                erro: true,
+                mensagem: 'Parametros obrigatorios não encontrados!'
+            };
+        }
+
+        try {
+            let id = paramns.pacote.id
+                , tabela = paramns.pacote.table
+                , chave = paramns.pacote.chave
+            ;
+
+            let res = await this.db.select(`
+                select * from ${tabela}
+                where ${chave} = ${id}
+            `);
+
+            return {
+                erro: false,
+                mensagem: '',
+                registro: res
+            };
+
+        } catch (error) {
+            console.log(error);
+            return {
+                erro: true,
+                mensagem: 'Erro interno na busca de registro!'
+            };
+        }
+    }
 }
 
 module.exports = router;
