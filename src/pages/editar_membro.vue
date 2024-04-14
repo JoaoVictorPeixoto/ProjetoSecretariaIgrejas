@@ -37,7 +37,21 @@
                     
                     if(ficha_componente.value.formulario_componente.campos[j][type]){
                         id = ficha_componente.value.formulario_componente.campos[j][type].id;
-                        ficha_componente.value.formulario_componente.campos[j][type].value = campo_serve[id];
+
+                        // Caso o campo seja um campo de data, converte ele para um objeto data.
+                        if(typeof(campo_serve[id]) === 'string' && id.includes('data')){
+                            let data = new Date(campo_serve[id])
+                                , ano = data.getFullYear()
+                                , mes = data.getMonth()
+                                , dia = data.getDay()
+                                , mes_string = mes < 10 ? '0' + mes : mes
+                                , dia_string = dia < 10 ? '0' + dia : dia
+                                , value = ano + '-' + mes_string + '-' + dia_string
+                            ;
+                            ficha_componente.value.formulario_componente.campos[j][type].value = value;
+                        } else {
+                            ficha_componente.value.formulario_componente.campos[j][type].value = campo_serve[id];
+                        }
                     }
                     
                 }
