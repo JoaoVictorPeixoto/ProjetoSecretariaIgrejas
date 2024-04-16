@@ -9,7 +9,7 @@ import navBar from '../components/navbar.vue'
 <template>
     
     <navBar />
-    <ficha  />
+    <ficha enviar_id="true" />
     
 </template>
 

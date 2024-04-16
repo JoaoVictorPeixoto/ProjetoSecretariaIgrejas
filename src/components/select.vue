@@ -24,7 +24,7 @@ defineExpose({
   value,
   erro_campo,
   mensagem_erro,
-  label
+  label,
 })
 
 // inject 
@@ -36,6 +36,10 @@ watch(limpa_formulario, () => {
   if(limpa_formulario.value){
     limpaCampo();
   }
+});
+
+watch(value, () => {
+  changValue()
 });
 
 

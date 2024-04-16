@@ -27,17 +27,17 @@ const router = createRouter({
     },
     {
       path: '/testeCampos',
-      name: 'testeCampos',
+      name: 'teste_campos',
       component: () => import('../pages/teste_campos.vue')
     },
     {
       path: '/listaMembros',
-      name: 'listaMembros',
+      name: 'lista_membros',
       component: () => import('../pages/lista_membros.vue')
     },
     {
       path: '/editarMembro',
-      name: 'editarMembro',
+      name: 'editar_membro',
       component: () => import('../pages/editar_membro.vue')
     },
     

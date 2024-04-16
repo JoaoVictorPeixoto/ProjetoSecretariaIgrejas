@@ -40,6 +40,9 @@
     }
   });
 
+  watch(value, () => {
+    changValue()
+  });
 
   onMounted(() => {
     changValue();

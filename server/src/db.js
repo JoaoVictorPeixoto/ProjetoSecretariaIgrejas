@@ -71,14 +71,72 @@ class db {
 
             return {
                 erro: false,
-                mensagem: 'Usuario cadastrado com sucesso!'
+                mensagem: 'Operação realizada com sucesso!'
             }
             
         } catch (error) {
             console.log(error);
             return {
                 erro: true,
-                mensagem: 'Falha ao cadastrar novo membro!'
+                mensagem: 'Falha na operação!'
+            }
+        }
+
+
+    }
+
+    async update(fields, values, tabela, chave_where, id_where){
+        // Caso qualquer parametro obrigatorio esteja faltante, retorna um erro.
+        if(!fields || !values || !tabela || !chave_where || !id_where){
+            return {
+                erro: true,
+                mensagem: 'Parametros obrigatorios faltantes!'
+            }
+        }
+
+        // cria lista de set textual
+        let set_textual = '';
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i]
+                , field = fields[i]
+            ;
+            if(utils._.isNumber(value) ||  utils._.isBoolean(value) || utils._.isNull(value)){
+                set_textual += field + ' = ' + value + ', ';
+            } else if (utils._.isDate(value) || utils._.isString(value)) {
+                set_textual += field + ' = ' + "'" + value + "', ";
+            }
+            
+        }
+
+        set_textual = set_textual.slice(0, set_textual.length-2);
+
+        // criar where textual
+        let where = `WHERE ${chave_where} = ${id_where}`;
+
+        try {
+            const conection = await mysql.createConnection({
+                host: config.HOST,
+                user: config.USER,
+                database: config.DATABASE,
+                password: config.PASSWORD
+            });
+            
+            const res = await conection.query(`
+                UPDATE ${tabela} 
+                SET ${set_textual}
+                ${where}
+            `);
+
+            return {
+                erro: false,
+                mensagem: 'Operação realizada com sucesso!'
+            }
+            
+        } catch (error) {
+            console.log(error);
+            return {
+                erro: true,
+                mensagem: 'Falha na operação!'
             }
         }
 

@@ -4,7 +4,7 @@ class fichaMembro {
         
     }
 
-    setup(props) {
+    setup(acao) {
         this.campos = [
             {
                 id: 'meb_rol',
@@ -350,16 +350,28 @@ class fichaMembro {
                     ]
         this.buttons = [
             {
-                id: 'submit',
-                label: 'Enviar',
+                id: 'cadastrar',
+                label: 'Cadastrar',
                 value: '',
                 size: 1,
                 type: 'button',
                 size_label: 5,
                 submit: true,
-                interacao: 'cadastrarMembro'
+                interacao: 'manipulaMembro',
+            },
+            {
+                id: 'editar',
+                label: 'Editar',
+                value: '',
+                size: 1,
+                type: 'button',
+                size_label: 5,
+                submit: true,
+                interacao: 'manipulaMembro'
             }
         ]
+
+        this.configuraButtons(acao);
     }
 
     /**
@@ -415,6 +427,19 @@ class fichaMembro {
         return retorno;
     }
 
+
+    configuraButtons(acao){
+        for(let i = 0; i < this.buttons.length; i++){
+            if (this.buttons[i].id === 'cadastrar' && acao === 'editar_membro') {
+                this.buttons[i].hidden = true;
+            }
+
+            if (this.buttons[i].id === 'editar' && acao === 'unidao_membro') {
+                this.buttons[i].hidden = true;
+            }
+        
+        }
+    }
 }
 
 module.exports = fichaMembro;

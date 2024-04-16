@@ -3,6 +3,8 @@ import {reactive, onMounted, ref} from 'vue';
 import carregamentoPaginas from '../utilities/carregamento_paginas'
 import style from '../styles/styles';
 import campo from './campos.vue'
+import {useRouter} from 'vue-router';
+
 
 // campos e botões do formulario
 let rows_campos = reactive([])
@@ -10,6 +12,8 @@ let rows_campos = reactive([])
 ;
 
 const campos = ref(null);
+
+const router = useRouter();
 
 // eventos proprios do formulario
 const emit = defineEmits(['updateFormulario', 'clickButtonSubmit']);
@@ -19,8 +23,9 @@ let props = defineProps(['pagina']);
 
 // Metodos
 onMounted(async () => {
+    let acao = router.currentRoute.value.name;
     let campos =  await new carregamentoPaginas().buscaInfoPag(props.pagina, 'carregaCampos', 'campos')
-        , buttons = await new carregamentoPaginas().buscaInfoPag(props.pagina, 'carregaButtons', 'buttons')
+        , buttons = await new carregamentoPaginas().buscaInfoPag(props.pagina, 'carregaButtons', 'buttons', acao)
     ; 
     let controle_size = 0
        ,  row = []

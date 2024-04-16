@@ -19,7 +19,7 @@
      * do membro para que suas informações sejam recuperadas.
      */
     onBeforeRouteLeave (async (to, from) => {
-        if(to.name === 'editarMembro'){
+        if(to.name === 'editar_membro'){
             sessionStorage.setItem('meb_id', meb_id);
         }
     });

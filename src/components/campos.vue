@@ -58,10 +58,11 @@ defineExpose({
 
 <template>
     <campo_input ref="input" @updateValue="updateValue" :label="params.label" :type="params.type" :input_id="params.id" v-if="campo_input_visivel" :size_label="params.size_label" v-model="value"/>
-    <buttonExt :label="params.label" :button_id="params.id" :button_submit="params.submit" :button_interacao="params.interacao" v-if="campo_button_visivel"
-         @focusButton="$emit('focusButton')"
-         @blurButton="$emit('blurButton')"
-         @clickButton="(id, submit_button, interacao) => {$emit('clickButton', id, submit_button, interacao)}"
+    <buttonExt :label="params.label" :button_id="params.id" :button_submit="params.submit" 
+        :button_interacao="params.interacao" v-if="campo_button_visivel && !params.hidden"
+        @focusButton="$emit('focusButton')"
+        @blurButton="$emit('blurButton')"
+        @clickButton="(id, submit_button, interacao) => {$emit('clickButton', id, submit_button, interacao)}"
     />
     <selectExt
         ref="select"

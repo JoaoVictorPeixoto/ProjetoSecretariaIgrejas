@@ -1,10 +1,16 @@
 <script setup>
-import { ref, provide, reactive} from "vue";
+import { ref, provide, reactive, onMounted} from "vue";
 import formulario from "./formulario_generico.vue";
 import "../styles/formularios.css";
 import style from "../styles/styles";
 import alerta from "../components/alertas";
 import interacoes from "../utilities/interacoes";
+import {useRouter} from 'vue-router';
+
+// paremetros do pai
+let props = defineProps(['enviar_id']);
+
+const router = useRouter();
 
 let pagina = ref("ficha_membros"),
   furmulario_style = style.class_formulario + " formulario",
@@ -22,6 +28,15 @@ const formulario_componente = ref(null);
 provide("forcaSubmit", forca_submit);
 provide("limpa_formulario", limpa_formulario);
 provide("mensagem_erro", mensagem_erro);
+
+/**
+ * Caso seja indicado outra pagina pelo componente pai, substitui o dafault
+ */
+onMounted(async () => {
+  if(props.pagina){
+    pagina = props.pagina;
+  }
+});
 
 // Chamada quando o campo button receber foco
 function focusButton() {
@@ -45,11 +60,14 @@ function updateFormulario(value) {
  */
 async function clickSubmit(interacao) {
   limpa_formulario.value = false;
-  let pacote = preparaPacote(formulario_value);
+  let pacote = preparaPacote(formulario_value)
+    , name_route = router.currentRoute.value.name
+  ;
 
   if (!pacote.erro) {
     // informa qual é a pagina
     pacote.pagina = 'ficha_membros';
+    pacote.comando = name_route === 'editar_membro' ? 'update' : 'insert';
 
     let retorno = await interacoes.interage_server(pacote, interacao);
     processaRetornoPacote(retorno);
@@ -95,6 +113,12 @@ function preparaPacote(formulario_value) {
     }
   }
 
+  // adiciona possivel id do membro que está sendo editado para o serve
+  if(props.enviar_id){
+    pacote_retorno.id = sessionStorage.getItem('meb_id');
+    pacote_retorno.sql.chave_where = 'meb_id';
+  }
+
   return pacote_retorno;
 }
 
@@ -127,11 +151,13 @@ function processaRetornoPacote(pacote) {
     }
   }
 
-  if (pacote.mensagem !== '' && pacote.mensagem !== undefined) {
-    new alerta().emiteAlerta(pacote.mensagem, pacote.erro ? "error" : "success", 2000);
-  }
+  let name_route = router.currentRoute.value.name
+    , mensagem = pacote.erro ? pacote.mensagem  : name_route === 'editar_membro' ? 'Membro editado com sucesso!' : 'Membro inserido com Sucesso'
+    , tipo = pacote.erro ? "error" : "success"
+  ;
+  new alerta().emiteAlerta(mensagem, tipo, 2000);
 
-  if (!pacote.erro) {
+  if (!pacote.erro && name_route !== 'editar_membro') {
       limpa_formulario.value = true;
   }
 

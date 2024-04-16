@@ -1,7 +1,7 @@
 <script setup>
     import ficha from '../components/ficha.vue';
     import navBar from '../components/navbar.vue';
-    import {onMounted, ref} from 'vue';
+    import {onMounted, ref, onBeforeRouteLeave} from 'vue';
     import alerta from "../components/alertas";
     import interacoes from "../utilities/interacoes";
 
@@ -42,8 +42,8 @@
                         if(typeof(campo_serve[id]) === 'string' && id.includes('data')){
                             let data = new Date(campo_serve[id])
                                 , ano = data.getFullYear()
-                                , mes = data.getMonth()
-                                , dia = data.getDay()
+                                , mes = data.getMonth() + 1
+                                , dia = data.getDate()
                                 , mes_string = mes < 10 ? '0' + mes : mes
                                 , dia_string = dia < 10 ? '0' + dia : dia
                                 , value = ano + '-' + mes_string + '-' + dia_string
@@ -67,7 +67,7 @@
 
 <template>
     <navBar />
-    <ficha  ref="ficha_componente" />
+    <ficha  ref="ficha_componente" enviar_id="true"/>
     
 </template>
 

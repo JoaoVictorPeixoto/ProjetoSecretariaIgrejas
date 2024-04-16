@@ -97,7 +97,7 @@ class router {
 
 
         let pagina = await this.__carrega_pagina(paramns.pagina);
-        pagina.setup();
+        pagina.setup(paramns.acao);
         retorno.buttons = pagina.buttons;
 
         return retorno;
@@ -113,7 +113,7 @@ class router {
      *      }
      * @returns 
      */
-    async cadastrarMembro(paramns){
+    async manipulaMembro(paramns){
 
         // caso não exista os parametros obrigatorios, retorna um erro para o chamador.
         if(!paramns.pacote.sql){
@@ -122,7 +122,7 @@ class router {
                 mensagem: `Parametro 'sql' obrigatorio não preenchido!`
             };
         } else {
-            if(!paramns.pacote.sql.fields || !paramns.pacote.sql.values || !paramns.pacote.campos){
+            if(!paramns.pacote.sql.fields || !paramns.pacote.sql.values || !paramns.pacote.campos || !paramns.pacote.comando){
                 return {
                     erro: true,
                     mensagem: 'Parametros obrigatorios não preenchidos!'
@@ -131,8 +131,9 @@ class router {
         }  
     
         let pagina = await this.__carrega_pagina(paramns.pacote.pagina);
+
         // valida campos
-        pagina.setup();
+        pagina.setup(paramns.pagina);
         let campos_verificados = await pagina.verify(paramns.pacote.campos);
 
         try {
@@ -140,10 +141,26 @@ class router {
             if(campos_verificados !== null){
                 throw ''
             }
+            
+            let res;
+            if (paramns.pacote.comando === 'insert') {
+                res = await this.db.insert(paramns.pacote.sql.fields, paramns.pacote.sql.values, 'membros');
+                
+            } else if (paramns.pacote.comando === 'update') {
 
-            let res = await this.db.insert(paramns.pacote.sql.fields, paramns.pacote.sql.values, 'membros');
+                if(!paramns.pacote.sql.chave_where || !paramns.pacote.id){
+                    return {
+                        erro: true,
+                        mensagem: 'Parametros obrigatorios não preenchidos!'
+                    };
+                }
+
+                res = await this.db.update(paramns.pacote.sql.fields, paramns.pacote.sql.values, 'membros', paramns.pacote.sql.chave_where, paramns.pacote.id);
+            }
+
             return res
-        } catch (error) {
+
+        } catch (error) { 
             console.log(error);
             return {
                 erro: true,
@@ -234,6 +251,7 @@ class router {
             };
         }
     }
+
 }
 
 module.exports = router;
