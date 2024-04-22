@@ -46,9 +46,6 @@ const router = createRouter({
 })
 
 router.beforeResolve((to, from) => {
-  let location = window.location;
-  // pega todas a rotas do sistema
-  let rotas = getRotas().map(rota => rota.name);
 
   let usr_validado =  sessionStorage.getItem('usuario_validado') === 'true' ? true : false;
 

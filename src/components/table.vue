@@ -53,7 +53,7 @@
                 
             }
 
-            return [['Nome', 'Data de Nascimento', 'Data de Batismo', 'Número de Rol', ''],res];
+            return [['Nome', 'Data de Nascimento', 'Data de Batismo', 'Número de Rol', '', ''],res];
         }
 
     }
@@ -62,6 +62,10 @@
         console.log('Clicou na linha ' + index_linha + ' - Nome: ' + membro.meb_nome);
         meb_id = membro.meb_id;
         router.push('editarMembro');
+    }
+
+    function desligarMembro(membro, index_linha){
+        console.log('Não desligo não!');
     }
 
     //#endregion
@@ -83,6 +87,7 @@
                     <td>{{membro.meb_data_batismo}}</td>
                     <td>{{membro.meb_rol}}</td>
                     <td @click="editarMembro(membro, index_linha)" class="editar">Editar</td>
+                    <td @click="desligarMembro(membro, index_linha)" class="desligar">Desligar</td>
                 </tr> 
             </tbody>
         </table>
@@ -98,6 +103,17 @@
     text-align:     center;
     font-weight:    bolder;
     background-color: rgb(216, 235, 255) !important;
+    cursor: pointer;
+}
+
+.desligar:hover{
+    background-color: rgb(255, 91, 91) !important;
+}
+
+.desligar{
+    text-align:     center;
+    font-weight:    bolder;
+    background-color: rgb(255, 216, 216) !important;
     cursor: pointer;
 }
 

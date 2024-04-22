@@ -8,12 +8,8 @@ const router = useRouter();
 const props = defineProps(['closeLink']);
 
 function fechar(){
-
   let pagina = props.closeLink ? props.closeLink : '/home'
-  
   router.push(pagina);
-
-  
 }
 
 function redirecionar(path){
@@ -39,8 +35,7 @@ function redirecionar(path){
                   <li><a class="dropdown-item" @click="redirecionar('listaMembros')">Listas de Membros</a></li>
                   <li><a class="dropdown-item"  @click="redirecionar('uniao')">União de Membros</a></li>
                   <li><a class="dropdown-item"  @click="redirecionar('reintegracao')">Reintegração de membro</a></li>
-                  <li><a class="dropdown-item" href="#">Falecimento</a></li>
-                  <li><a class="dropdown-item" href="#">Suspensão</a></li>
+                  <li><a class="dropdown-item" href="#">Suspensão de Membro</a></li>
                   <li><a class="dropdown-item"  @click="redirecionar('testeCampos')">teste campos</a></li>
                 </ul>
               </li>
@@ -49,7 +44,7 @@ function redirecionar(path){
               </li>
             </ul>
             <form class="d-flex">
-              <button type="button" class="btn-close" aria-label="Close" @click="fechar"></button>
+              <i class="bi bi-x fs-2 aumentar" @click="fechar"></i>
             </form>
           </div>
         </div>
@@ -57,5 +52,12 @@ function redirecionar(path){
 </template>
 
 <style scoped>
+.aumentar:hover{
+  color: rgb(0, 4, 255);
+}
+
+.aumentar{
+  color: rgb(0, 0, 0);
+}
 
 </style>

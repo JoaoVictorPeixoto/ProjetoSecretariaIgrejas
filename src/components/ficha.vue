@@ -8,7 +8,7 @@ import interacoes from "../utilities/interacoes";
 import {useRouter} from 'vue-router';
 
 // paremetros do pai
-let props = defineProps(['enviar_id']);
+let props = defineProps(['enviar_id', 'voltar_pagina']);
 
 const router = useRouter();
 
@@ -163,6 +163,11 @@ function processaRetornoPacote(pacote) {
 
 }
 
+function voltar(){
+  let pagina = props.voltar_pagina;
+  router.push(pagina);
+}
+
 function forcaSubmit() {
   if (!focus_button_submit) {
     forca_submit.value = true;
@@ -176,6 +181,9 @@ defineExpose({
 
 <template>
   <div :class="furmulario_style" @keyup.enter="forcaSubmit">
+    <form v-if="voltar_pagina" class="d-flex position-relative">
+        <i class="bi bi-arrow-left-short fs-2 aumentar position-absolute top-0 end-0"  @click="voltar"></i>
+    </form>
     <formulario
       ref="formulario_componente"
       :pagina="pagina"
@@ -187,4 +195,13 @@ defineExpose({
   </div>
 </template>
 
-<style></style>
+<style>
+.aumentar:hover{
+  color: rgb(0, 4, 255);
+}
+
+.aumentar{
+  color: rgb(0, 0, 0);
+}
+
+</style>

@@ -1,7 +1,7 @@
 <script setup>
     import ficha from '../components/ficha.vue';
     import navBar from '../components/navbar.vue';
-    import {onMounted, ref, onBeforeRouteLeave} from 'vue';
+    import {onMounted, ref} from 'vue';
     import alerta from "../components/alertas";
     import interacoes from "../utilities/interacoes";
 
@@ -67,7 +67,7 @@
 
 <template>
     <navBar />
-    <ficha  ref="ficha_componente" enviar_id="true"/>
+    <ficha  ref="ficha_componente" enviar_id="true" voltar_pagina="/listaMembros"/>
     
 </template>
 
