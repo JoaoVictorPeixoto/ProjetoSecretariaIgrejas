@@ -12,7 +12,7 @@ let furmulario_style = style.class_formulario + " formulario";
     
     <navBar />
     <div :class="furmulario_style">
-        <h1 style="text-align: center">Teste Lista Membros</h1>
+        <h1 style="text-align: center">Lista de Membros</h1>
         <tableExt/>
     </div>
 </template>
