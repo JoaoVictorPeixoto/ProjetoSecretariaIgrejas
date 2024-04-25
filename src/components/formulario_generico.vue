@@ -16,7 +16,7 @@ const campos = ref(null);
 const router = useRouter();
 
 // eventos proprios do formulario
-const emit = defineEmits(['updateFormulario', 'clickButtonSubmit']);
+const emit = defineEmits(['updateFormulario', 'clickButtonSubmit', 'formularioCarregado']);
 
 // Campos do formulario
 let props = defineProps(['pagina']);
@@ -52,6 +52,8 @@ onMounted(async () => {
     if(controle_size <= 12){
         rows_campos.push(row);
     }
+
+    emit('formularioCarregado');
 });
 
 // Enter do teclado

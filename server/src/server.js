@@ -23,7 +23,7 @@ server.post('/interacao', async (req, res) => {
         let results = await ROUTER.resolver(body.interacao, body);
 
         if(results.erro){
-            res.status(401).json(results);
+            res.status(results.codigo || 500).json(results);
         } else {
             res.json(results);
         }

@@ -6,16 +6,17 @@ class router {
 
     db = new db();
 
-    async resolver(requisicao, paramns){
+    async resolver(requisicao, params){
         if(requisicao){
             try {
-                return this[requisicao](paramns);
+                return this[requisicao](params);
             } catch (error) {
                 console.log(error);
                 return {
                     erro: true,
                     stack_erro: error,
-                    mensagem: 'Falha na requisição'
+                    mensagem: 'Falha na requisição',
+                    codigo: 404
                 };
             }
            
@@ -23,9 +24,9 @@ class router {
         
     }
 
-    async validaLogin(paramns){
-        let usr_ident = paramns.usr_ident
-            , usr_senha = paramns.usr_senha
+    async validaLogin(params){
+        let usr_ident = params.usr_ident
+            , usr_senha = params.usr_senha
         ;
 
         let retorno = {
@@ -49,7 +50,8 @@ class router {
                 retorno.mensagem = `Bem-Vindo(a) ${resultado_query[0].usr_nome}`
             } else {
                 retorno.erro = true;
-                retorno.mensagem = 'Usuario ou senha invalidos!'
+                retorno.mensagem = 'Usuario ou senha invalidos!',
+                retorn.codigo = 401
             }
             
             return retorno;
@@ -58,46 +60,48 @@ class router {
             console.log(erro);
             return {
                 erro: true,
-                mensagem: 'Falha ao buscar usuario!'
+                mensagem: 'Falha ao buscar usuario!',
             }
         }
         
     }
 
-    async carregaCampos(paramns){
+    async carregaCampos(params){
         let retorno = {
             erro: false,
             mensagem: ''
         }
         let pagina_aquivo;
 
-        if(!paramns.pagina){
-            retorno.erro = true,
-            retorno.mensagem = 'Pagina não encontrada para recuperação de campos!'
+        if(!params.pagina){
+            retorno.erro = true;
+            retorno.mensagem = 'Pagina não encontrada para recuperação de campos!';
+            retorno.codigo = 400
         }
 
-        let pagina = await this.__carrega_pagina(paramns.pagina);
+        let pagina = await this.__carrega_pagina(params.pagina);
         pagina.setup();
         retorno.campos = pagina.campos;
 
         return retorno;
     }
 
-    async carregaButtons(paramns){
+    async carregaButtons(params){
         let retorno = {
             erro: false,
             mensagem: ''
         }
         let pagina_aquivo;
 
-        if(!paramns.pagina){
-            retorno.erro = true,
-            retorno.mensagem = 'Pagina não encontrada para recuperação de Botões!'
+        if(!params.pagina){
+            retorno.erro = true;
+            retorno.mensagem = 'Pagina não encontrada para recuperação de Botões!';
+            retorno.codigo = 400;
         }
 
 
-        let pagina = await this.__carrega_pagina(paramns.pagina);
-        pagina.setup(paramns.acao);
+        let pagina = await this.__carrega_pagina(params.pagina);
+        pagina.setup(params.acao);
         retorno.buttons = pagina.buttons;
 
         return retorno;
@@ -105,7 +109,7 @@ class router {
 
     /**
      * Cadastra um novo membro
-     * @param {*} paramns  - uma objeto contendo uma um objeto sql como propriedade que contem obrigatoriamente a seguinte estrutura
+     * @param {*} params  - uma objeto contendo uma um objeto sql como propriedade que contem obrigatoriamente a seguinte estrutura
      *      sql : {
      *          fields: [...],
      *          values: [...],
@@ -113,28 +117,30 @@ class router {
      *      }
      * @returns 
      */
-    async manipulaMembro(paramns){
+    async manipulaMembro(params){
 
         // caso não exista os parametros obrigatorios, retorna um erro para o chamador.
-        if(!paramns.pacote.sql){
+        if(!params.pacote.sql){
             return {
                 erro: true,
-                mensagem: `Parametro 'sql' obrigatorio não preenchido!`
+                mensagem: `Parametro 'sql' obrigatorio não preenchido!`,
+                codigo: 400
             };
         } else {
-            if(!paramns.pacote.sql.fields || !paramns.pacote.sql.values || !paramns.pacote.campos || !paramns.pacote.comando){
+            if(!params.pacote.sql.fields || !params.pacote.sql.values || !params.pacote.campos || !params.pacote.comando){
                 return {
                     erro: true,
-                    mensagem: 'Parametros obrigatorios não preenchidos!'
+                    mensagem: 'Parametros [fields, values, campos, comando] obrigatorios não preenchidos!',
+                    codigo: 400
                 };
             }
         }  
     
-        let pagina = await this.__carrega_pagina(paramns.pacote.pagina);
+        let pagina = await this.__carrega_pagina(params.pacote.pagina);
 
         // valida campos
-        pagina.setup(paramns.pagina);
-        let campos_verificados = await pagina.verify(paramns.pacote.campos);
+        pagina.setup(params.pagina);
+        let campos_verificados = await pagina.verify(params.pacote.campos);
 
         try {
 
@@ -143,19 +149,20 @@ class router {
             }
             
             let res;
-            if (paramns.pacote.comando === 'insert') {
-                res = await this.db.insert(paramns.pacote.sql.fields, paramns.pacote.sql.values, 'membros');
+            if (params.pacote.comando === 'insert') {
+                res = await this.db.insert(params.pacote.sql.fields, params.pacote.sql.values, 'membros');
                 
-            } else if (paramns.pacote.comando === 'update') {
+            } else if (params.pacote.comando === 'update') {
 
-                if(!paramns.pacote.sql.chave_where || !paramns.pacote.id){
+                if(!params.pacote.sql.chave_where || !params.pacote.id){
                     return {
                         erro: true,
-                        mensagem: 'Parametros obrigatorios não preenchidos!'
+                        mensagem: 'Parametros [chave_where, id] obrigatorios não preenchidos!',
+                        codigo: 400
                     };
                 }
 
-                res = await this.db.update(paramns.pacote.sql.fields, paramns.pacote.sql.values, 'membros', paramns.pacote.sql.chave_where, paramns.pacote.id);
+                res = await this.db.update(params.pacote.sql.fields, params.pacote.sql.values, 'membros', params.pacote.sql.chave_where, params.pacote.id);
             }
 
             return res
@@ -182,7 +189,17 @@ class router {
         }
         
         if(!pagina_aquivo){
-            pagina_aquivo = require(`../paginas/genericas/${nome_pagina}`);
+            try {
+                pagina_aquivo = require(`../paginas/genericas/${nome_pagina}`);
+            } catch (error){
+                console.log(error);
+                return {
+                    erro: true,
+                    mensagem: 'Erro ao buscar pagina!',
+                    codigo: 400
+                }
+            }
+            
         }
 
         let pagina = new pagina_aquivo();
@@ -192,18 +209,23 @@ class router {
     /**
      * Busca todos os registros de uma tabela especifica
      */
-    async buscaRegistros(paramns){
-        if(!paramns.pacote.table){
+    async buscaRegistros(params){
+        if(!params.pacote.table){
             return {
                 erro: true,
-                mensagem: 'Tabela não identificada'
+                mensagem: 'Tabela não identificada',
+                codigo: 400
             }
         }
 
         try {
-            let tabela = paramns.pacote.table
+            let tabela = params.pacote.table
+                , where = params.pacote.where ? params.pacote.where : ''
+                , join = params.pacote.join ? params.pacote.join : ''
                 , res = await this.db.select(`
                     SELECT * FROM ${tabela}
+                    ${join}
+                    ${where}
                 `)
             ;
 
@@ -218,18 +240,19 @@ class router {
         
     }
 
-    async recuperaRegistro(paramns){
-        if(!paramns.pacote.id || !paramns.pacote.table || !paramns.pacote.chave){
+    async recuperaRegistro(params){
+        if(!params.pacote.id || !params.pacote.table || !params.pacote.chave){
             return {
                 erro: true,
-                mensagem: 'Parametros obrigatorios não encontrados!'
+                mensagem: 'Parametros [id, table, chave] obrigatorios não encontrados!',
+                codigo: 400
             };
         }
 
         try {
-            let id = paramns.pacote.id
-                , tabela = paramns.pacote.table
-                , chave = paramns.pacote.chave
+            let id = params.pacote.id
+                , tabela = params.pacote.table
+                , chave = params.pacote.chave
             ;
 
             let res = await this.db.select(`
@@ -252,6 +275,30 @@ class router {
         }
     }
 
+    async desligaMembro(params) {
+        if(!params.pacote.id){
+            return {
+                erro: true,
+                mensagem: 'Parâmetro [id] obrigatorio faltante!',
+                codigo: 400
+            }
+        }
+
+        try {
+            let fields = ['desmeb_motivo', 'desmeb_meb_id']
+                , values = [params.pacote.desmeb_motivo, params.pacote.id]
+                , res = await this.db.insert(fields, values, 'desligamento_membro');
+            ;  
+
+            return res;
+        } catch (error) {
+            console.log(error);
+            return {
+                erro: true,
+                mensagem: 'Erro interno ao desligar membro!',
+            }
+        }
+    }
 }
 
 module.exports = router;

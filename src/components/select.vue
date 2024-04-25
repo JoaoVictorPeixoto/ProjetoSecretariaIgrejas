@@ -6,7 +6,8 @@ let props = defineProps({
   label: '',
   id: '',
   size_label: 1,
-  options: []
+  options: [],
+  disabled: false
 })
 
 const emit = defineEmits(['updateValue']);
@@ -17,6 +18,7 @@ let label = ref(props.label)
     , erro_campo = ''
     , erro_mensagem = style.mensagem_erro.erro_mensagem
     , mensagem_erro = ref('')
+    , disabled = ref(props.disabled)
 ;
 
 defineExpose({
@@ -85,7 +87,7 @@ function changValue(){
 <template>
 <div class='form-floating'>
     <select :onchange="changValue" name="select" class='form-select form-select margem border-dark' :style="erro_campo"
-    :id="id" v-model="value">
+    :id="id" v-model="value" :disabled="disabled">
         <template v-for="option in props.options" :key="option.id">
           <option :disabled="option.disabled" :selected="option.selected" :value="option.id">{{option.value}}</option>
         </template>

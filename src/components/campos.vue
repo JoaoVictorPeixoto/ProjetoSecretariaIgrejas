@@ -57,7 +57,7 @@ defineExpose({
 </script>
 
 <template>
-    <campo_input ref="input" @updateValue="updateValue" :label="params.label" :type="params.type" :input_id="params.id" v-if="campo_input_visivel" :size_label="params.size_label" v-model="value"/>
+    <campo_input ref="input" @updateValue="updateValue" :label="params.label" :type="params.type" :input_id="params.id" v-if="campo_input_visivel" :size_label="params.size_label" v-model="value" :disabled="params.disabled"/>
     <buttonExt :label="params.label" :button_id="params.id" :button_submit="params.submit" 
         :button_interacao="params.interacao" v-if="campo_button_visivel && !params.hidden"
         @focusButton="$emit('focusButton')"
@@ -68,7 +68,7 @@ defineExpose({
         ref="select"
         @updateValue="updateValue" :label="params.label" :id="params.id"
         v-model="value" :size_label="params.size_label" :options="params.options"
-        v-if="campo_select_visivel" 
+        v-if="campo_select_visivel" :disabled="params.disabled"
     />
 </template>
 

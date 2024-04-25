@@ -40,6 +40,11 @@ const router = createRouter({
       name: 'editar_membro',
       component: () => import('../pages/editar_membro.vue')
     },
+    {
+      path: '/desligarMembro',
+      name: 'desligar_membro',
+      component: () => import('../pages/desligar_membro.vue')
+    },
     
     
   ]

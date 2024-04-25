@@ -8,7 +8,7 @@
     let tabela = ref([])
         , cabecario = ref([])
         , style_col = 'scope="row"'
-        , meb_id = ''
+        , meb = {}
     ;
 
     // instancia do router
@@ -19,8 +19,9 @@
      * do membro para que suas informações sejam recuperadas.
      */
     onBeforeRouteLeave (async (to, from) => {
-        if(to.name === 'editar_membro'){
-            sessionStorage.setItem('meb_id', meb_id);
+        if(to.name === 'editar_membro' || to.name === 'desligar_membro'){
+            sessionStorage.setItem('meb_id', meb.meb_id);
+            sessionStorage.setItem('meb_nome', meb.meb_nome);
         }
     });
 
@@ -38,7 +39,14 @@
     //#region :: Metodos
 
     async function buscaColunasLinhas(){
-        let res = await interacoes.interage_server({table: 'membros'}, 'buscaRegistros');
+        let res = await interacoes.interage_server(
+            {
+                table: 'membros',
+                join:'LEFT JOIN desligamento_membro ON desmeb_meb_id = meb_id',
+                where:'WHERE desmeb_id IS NULL'
+            }, 
+            'buscaRegistros'
+        );
 
         if(res.erro){
             new alerta().emiteAlerta(res.mensagem, "error", 2000);
@@ -59,13 +67,13 @@
     }
 
     function editarMembro(membro, index_linha){
-        console.log('Clicou na linha ' + index_linha + ' - Nome: ' + membro.meb_nome);
-        meb_id = membro.meb_id;
+        meb = membro;
         router.push('editarMembro');
     }
 
-    function desligarMembro(membro, index_linha){
-        console.log('Não desligo não!');
+    async function desligarMembro(membro, index_linha){
+        meb = membro;
+        router.push('desligarMembro');
     }
 
     //#endregion

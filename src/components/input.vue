@@ -6,7 +6,8 @@
     label: '',
     type: 'text',
     input_id: '',
-    size_label: 1
+    size_label: 1,
+    disabled: false
   })
 
   const emit = defineEmits(['updateValue']);
@@ -19,6 +20,7 @@
       , erro_campo = ''
       , erro_mensagem = style.mensagem_erro.erro_mensagem
       , mensagem_erro = ref('')
+      , disabled = ref(props.disabled)
   ;
 
   defineExpose({
@@ -72,7 +74,7 @@
 
 <template>
 <div class='form-floating'>
-    <input :type="type" name="input_text" :class="classe" :style="erro_campo" v-model="value" @input="changValue" :id="id" :placeholder="label">
+    <input :type="type" name="input_text" :class="classe" :style="erro_campo" v-model="value" @input="changValue" :id="id" :placeholder="label" :disabled='disabled'>
     <label :for="id">{{ label }}</label>
 </div>
 <label :for="id" v-if="!!mensagem_erro" :style="erro_mensagem" >{{ mensagem_erro }}</label>
