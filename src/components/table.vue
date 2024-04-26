@@ -1,15 +1,35 @@
 <script setup>
 
-    import {onMounted, ref} from 'vue'
+    import {onMounted, ref, reactive} from 'vue'
     import interacoes from "../utilities/interacoes";
     import alerta from "./alertas";
     import {useRouter, onBeforeRouteLeave} from 'vue-router';
+    import selectExt from './select.vue'
 
-    let tabela = ref([])
-        , cabecario = ref([])
+    let tabela = reactive(ref([]))
+        , cabecario = reactive(ref([]))
         , style_col = 'scope="row"'
         , meb = {}
+        , desligar = ref(false)
+        , editar = ref(false)
     ;
+
+    let options = [
+    {
+        id: 'mebros',
+        value: 'Membros',
+        selected: true,
+    },
+    {
+        id: 'membros_desligados',
+        value: 'Desligados'
+    },
+    {
+        id: 'membros_falecidos',
+        value: 'Falecidos',
+        disabled: true
+    },
+];
 
     // instancia do router
     const router = useRouter();
@@ -38,13 +58,18 @@
 
     //#region :: Metodos
 
-    async function buscaColunasLinhas(){
-        let res = await interacoes.interage_server(
-            {
+    async function buscaColunasLinhas(tipo_filtro){
+        let where = defineWhere(tipo_filtro)
+            , join = defineJoin(tipo_filtro)
+            , parametros_sql = {
                 table: 'membros',
-                join:'LEFT JOIN desligamento_membro ON desmeb_meb_id = meb_id',
-                where:'WHERE desmeb_id IS NULL'
-            }, 
+                join: join,
+                where: where
+            }
+        ;
+        
+        let res = await interacoes.interage_server(
+            parametros_sql,
             'buscaRegistros'
         );
 
@@ -60,8 +85,9 @@
                 res[i].meb_data_batismo = new Date(res[i].meb_data_batismo).toLocaleDateString();
                 
             }
-
-            return [['Nome', 'Data de Nascimento', 'Data de Batismo', 'Número de Rol', '', ''],res];
+            
+            let cabecario = defineCabecario(tipo_filtro);
+            return [cabecario, res];
         }
 
     }
@@ -76,12 +102,82 @@
         router.push('desligarMembro');
     }
 
+    async function FiltraLista(campo) {
+        [cabecario.value, tabela.value] = await buscaColunasLinhas(campo.value)
+    }
+
+    //#region :: Regras de Negocio
+
+    function defineWhere(tipo_filtro){
+        let where = '';
+        switch (tipo_filtro) {
+            case 'mebros':
+                where = 'WHERE desmeb_id IS NULL';
+            break;
+            case 'membros_desligados':
+                where = 'WHERE desmeb_id IS NOT NULL';
+            break;
+            case 'membros_falecidos':
+            break;
+        }
+
+        return where;
+    }
+
+    function defineJoin(tipo_filtro){
+        let join = '';
+        switch (tipo_filtro) {
+            case 'mebros':
+            case 'membros_desligados':
+                join = 'LEFT JOIN desligamento_membro ON desmeb_meb_id = meb_id';
+            break;
+            case 'membros_falecidos':
+            break;
+        }
+
+        return join;
+    }
+
+    function defineCabecario(tipo_filtro){
+        let cabecario = ['Nome', 'Data de Nascimento', 'Data de Batismo', 'Número de Rol', '', ''];
+        switch (tipo_filtro) {
+            case 'mebros':
+                editar.value = true;
+                desligar.value = true;
+            break;
+            case 'membros_desligados':
+                cabecario.pop();
+                desligar.value = false;
+            break;
+            case 'membros_falecidos':
+                cabecario.pop();
+                cabecario.pop();
+                editar.value = false;
+                desligar.value = false;
+            break;
+        }
+
+        return cabecario;
+    }
+
     //#endregion
-    
+
+    //#endregion
+
 </script>
 
 <template>
     <div>
+        <div class="row">
+            <div class="col-3 mb-2">
+                <selectExt 
+                    label="Filtro de Membros" 
+                    :options="options" 
+                    @updateValue="FiltraLista"
+                    no_change_mounted=true
+                />
+            </div>
+        </div>
         <table class="table table-hover table-bordered border-dark">
             <thead>
                 <tr>
@@ -94,8 +190,12 @@
                     <td>{{membro.meb_data_nasc}}</td>
                     <td>{{membro.meb_data_batismo}}</td>
                     <td>{{membro.meb_rol}}</td>
-                    <td @click="editarMembro(membro, index_linha)" class="editar">Editar</td>
-                    <td @click="desligarMembro(membro, index_linha)" class="desligar">Desligar</td>
+                    <template v-if="editar">
+                        <td @click="editarMembro(membro, index_linha)" class="editar">Editar</td>
+                    </template > 
+                    <template v-if="desligar">
+                        <td @click="desligarMembro(membro, index_linha)" class="desligar">Desligar</td>
+                    </template>
                 </tr> 
             </tbody>
         </table>

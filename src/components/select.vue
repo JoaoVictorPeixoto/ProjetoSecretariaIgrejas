@@ -7,7 +7,9 @@ let props = defineProps({
   id: '',
   size_label: 1,
   options: [],
-  disabled: false
+  disabled: false,
+  size_css: '',
+  no_change_mounted: false
 })
 
 const emit = defineEmits(['updateValue']);
@@ -49,15 +51,17 @@ watch(value, () => {
  * Seta valor 'default' do select, que será o option que possuir a propriedade selected true
  */
 onMounted(() => {
-    let option = props.options.find(option => {
-      return option.selected === true;
-    });
+  let option = props.options.find(option => {
+    return option.selected === true;
+  });
 
-    if(option){
-      value.value = option.id;
-    }
+  if(option){
+    value.value = option.id;
+  }
 
+  if(!props.no_change_mounted){
     changValue();
+  }
 });
 
 // Seta valor do campo para null
@@ -86,7 +90,7 @@ function changValue(){
 
 <template>
 <div class='form-floating'>
-    <select :onchange="changValue" name="select" class='form-select form-select margem border-dark' :style="erro_campo"
+    <select :onchange="changValue" name="select" class='form-select margem border-dark' :style="erro_campo"
     :id="id" v-model="value" :disabled="disabled">
         <template v-for="option in props.options" :key="option.id">
           <option :disabled="option.disabled" :selected="option.selected" :value="option.id">{{option.value}}</option>

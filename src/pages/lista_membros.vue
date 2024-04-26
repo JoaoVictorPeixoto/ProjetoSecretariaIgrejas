@@ -3,6 +3,7 @@ import navBar from '../components/navbar.vue'
 import tableExt from '../components/table.vue'
 import "../styles/formularios.css";
 import style from "../styles/styles";
+import {ref} from 'vue'
 
 let furmulario_style = style.class_formulario + " formulario";
 
@@ -13,7 +14,7 @@ let furmulario_style = style.class_formulario + " formulario";
     <navBar />
     <div :class="furmulario_style">
         <h1 style="text-align: center">Lista de Membros</h1>
-        <tableExt/>
+        <tableExt />
     </div>
 </template>
 
