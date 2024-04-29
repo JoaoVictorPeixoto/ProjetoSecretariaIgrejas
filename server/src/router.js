@@ -207,7 +207,9 @@ class router {
     }
 
     /**
-     * Busca todos os registros de uma tabela especifica
+     * Busca registros de uma tabela. 
+     * Aceita um entrada join e/ou where do tipo strig que será usado equivalentemente como join e where 
+     * textual da query.
      */
     async buscaRegistros(params){
         if(!params.pacote.table){
@@ -239,39 +241,30 @@ class router {
         }
         
     }
-
-    async recuperaRegistro(params){
-        if(!params.pacote.id || !params.pacote.table || !params.pacote.chave){
+    
+    async deletaRegistro(params){
+        if(!params.pacote.tabela || !params.pacote.where){
             return {
                 erro: true,
-                mensagem: 'Parametros [id, table, chave] obrigatorios não encontrados!',
+                mensagem: 'Parâmetro [tabela, where] obrigatorio faltante!',
                 codigo: 400
-            };
+            }
         }
 
+        let tabela = params.pacote.tabela
+            , where = params.pacote.where 
+        ;
+
         try {
-            let id = params.pacote.id
-                , tabela = params.pacote.table
-                , chave = params.pacote.chave
-            ;
-
-            let res = await this.db.select(`
-                select * from ${tabela}
-                where ${chave} = ${id}
-            `);
-
-            return {
-                erro: false,
-                mensagem: '',
-                registro: res
-            };
+            
+            return await this.db.delete(tabela, where);
 
         } catch (error) {
             console.log(error);
             return {
                 erro: true,
-                mensagem: 'Erro interno na busca de registro!'
-            };
+                mensagem: 'Falha Interna ao deletar Registro!'
+            }
         }
     }
 

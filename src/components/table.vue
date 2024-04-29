@@ -12,6 +12,8 @@
         , meb = {}
         , desligar = ref(false)
         , editar = ref(false)
+        , religar = ref(false)
+        , ultimo_filtro_tipo = ''
     ;
 
     let options = [
@@ -102,8 +104,25 @@
         router.push('desligarMembro');
     }
 
+    async function religarMembro(membro, index_linha){
+        meb = membro;
+        let pacote = {
+            tabela: 'desligamento_membro',
+            where: `desmeb_meb_id = ${meb.meb_id}`
+        };
+        let res = await interacoes.interage_server(pacote, 'deletaRegistro');
+        
+        if (res.erro) {
+            new alerta().emiteAlerta(res.mensagem, "error", 2000);
+        } else {
+            new alerta().emiteAlerta("Membro Religado com Sucesso!", "success", 2000);
+            [cabecario.value, tabela.value] = await buscaColunasLinhas(ultimo_filtro_tipo);
+        }
+    }
+
     async function FiltraLista(campo) {
-        [cabecario.value, tabela.value] = await buscaColunasLinhas(campo.value)
+        ultimo_filtro_tipo = campo.value;
+        [cabecario.value, tabela.value] = await buscaColunasLinhas(ultimo_filtro_tipo);
     }
 
     //#region :: Regras de Negocio
@@ -144,16 +163,18 @@
             case 'mebros':
                 editar.value = true;
                 desligar.value = true;
+                religar.value = false;
             break;
             case 'membros_desligados':
-                cabecario.pop();
                 desligar.value = false;
+                religar.value = true;
             break;
             case 'membros_falecidos':
                 cabecario.pop();
                 cabecario.pop();
                 editar.value = false;
                 desligar.value = false;
+                religar.value = false;
             break;
         }
 
@@ -196,6 +217,9 @@
                     <template v-if="desligar">
                         <td @click="desligarMembro(membro, index_linha)" class="desligar">Desligar</td>
                     </template>
+                    <template v-if="religar">
+                        <td @click="religarMembro(membro, index_linha)" class="religar">Religar</td>
+                    </template>
                 </tr> 
             </tbody>
         </table>
@@ -222,6 +246,17 @@
     text-align:     center;
     font-weight:    bolder;
     background-color: rgb(255, 216, 216) !important;
+    cursor: pointer;
+}
+
+.religar:hover{
+    background-color: rgb(91, 255, 105) !important;
+}
+
+.religar{
+    text-align:     center;
+    font-weight:    bolder;
+    background-color: rgb(149, 241, 157) !important;
     cursor: pointer;
 }
 

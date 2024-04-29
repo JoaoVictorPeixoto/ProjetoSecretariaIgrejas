@@ -18,17 +18,16 @@
         
         // pagote de envio
         let pacote_envio = {
-            id: meb_id,
             table: 'membros',
-            chave: 'meb_id'
+            where: `where meb_id = '${meb_id}'`
         };
 
         // busca os dados do mebro no serve
-        let pacote_retorno = await interacoes.interage_server(pacote_envio, 'recuperaRegistro');
+        let pacote_retorno = await interacoes.interage_server(pacote_envio, 'buscaRegistros');
         
         if (!pacote_retorno.erro) {
-            for (let i = 0; i < pacote_retorno.registro.length; i++) {
-                const campo_serve = pacote_retorno.registro[i];
+            for (let i = 0; i < pacote_retorno.length; i++) {
+                const campo_serve = pacote_retorno[i];
 
                 for (let j = 0; j < ficha_componente.value.formulario_componente.campos.length; j++) {
                     let type = !ficha_componente.value.formulario_componente.campos[j]['select'] ? 'input' : 'select'

@@ -142,6 +142,42 @@ class db {
 
 
     }
+
+    async delete(tabela, where){
+        // Caso qualquer parametro obrigatorio esteja faltante, retorna um erro.
+        if(!tabela || !where){
+            return {
+                erro: true,
+                mensagem: 'Parametros obrigatorios faltantes!'
+            }
+        }
+
+        try {
+            const conection = await mysql.createConnection({
+                host: config.HOST,
+                user: config.USER,
+                database: config.DATABASE,
+                password: config.PASSWORD
+            });
+            
+            const res = await conection.query(`
+                DELETE FROM ${tabela} 
+                WHERE ${where}
+            `);
+
+            return {
+                erro: false,
+                mensagem: 'Delete realizado com sucesso!'
+            }
+            
+        } catch (error) {
+            console.log(error);
+            return {
+                erro: true,
+                mensagem: 'Falha na operação!'
+            }
+        }
+    }
 }
 
 module.exports = db
