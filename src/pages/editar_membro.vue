@@ -4,10 +4,19 @@
     import {onMounted, ref} from 'vue';
     import alerta from "../components/alertas";
     import interacoes from "../utilities/interacoes";
+    import {onBeforeRouteLeave} from 'vue-router'
 
     let meb_id = ''
         , ficha_componente = ref(null)
     ;
+
+    onBeforeRouteLeave (async (to, from) => {
+        sessionStorage.removeItem('meb_id');
+        sessionStorage.removeItem('meb_nome');
+        sessionStorage.removeItem('editar');
+        
+        sessionStorage.setItem('filtro', 'membros');
+    });
 
     /**
      * Quando a pagina for montada, recupera o ida do membro salvo. 

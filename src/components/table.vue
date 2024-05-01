@@ -12,13 +12,15 @@
         , meb = {}
         , desligar = ref(false)
         , editar = ref(false)
+        , data_desligamento = ref(false)
         , religar = ref(false)
         , ultimo_filtro_tipo = ''
+        , opcao_filtro = ref('membros')
     ;
 
     let options = [
     {
-        id: 'mebros',
+        id: 'membros',
         value: 'Membros',
         selected: true,
     },
@@ -36,24 +38,18 @@
     // instancia do router
     const router = useRouter();
 
-    /**
-     * Antes de mudarmos de pagisn, caso o to seja a pagina de edição de membro, salvo temporariamente o id
-     * do membro para que suas informações sejam recuperadas.
-     */
-    onBeforeRouteLeave (async (to, from) => {
-        if(to.name === 'editar_membro' || to.name === 'desligar_membro'){
-            sessionStorage.setItem('meb_id', meb.meb_id);
-            sessionStorage.setItem('meb_nome', meb.meb_nome);
-        }
-    });
-
     //#region :: Life Hooks
 
     /**
     * Carrega Linhas e colunas da tabela
     */
     onMounted(async () => {
-        [cabecario.value, tabela.value] = await buscaColunasLinhas();
+        let filtro = sessionStorage.getItem('filtro') || 'membros';
+
+        opcao_filtro.value = filtro;
+        [cabecario.value, tabela.value] = await buscaColunasLinhas(filtro);
+
+        sessionStorage.removeItem('filtro');
     });
 
     //#endregion
@@ -85,6 +81,7 @@
             for (let i = 0; i < res.length; i++) {
                 res[i].meb_data_nasc = new Date(res[i].meb_data_nasc).toLocaleDateString();
                 res[i].meb_data_batismo = new Date(res[i].meb_data_batismo).toLocaleDateString();
+                res[i].desmeb_data = res[i].desmeb_data ? new Date(res[i].desmeb_data).toLocaleDateString() : ''
                 
             }
             
@@ -96,12 +93,27 @@
 
     function editarMembro(membro, index_linha){
         meb = membro;
-        router.push('editarMembro');
+        sessionStorage.setItem('meb_id', meb.meb_id);
+        sessionStorage.setItem('meb_nome', meb.meb_nome);
+        sessionStorage.setItem('editar', true);
+
+        let pagina = '';
+        if (!religar.value) {
+            pagina = 'editarMembro';
+        } else {
+            pagina = 'desligarMembro';
+        }
+
+        router.push(pagina);
     }
 
     async function desligarMembro(membro, index_linha){
         meb = membro;
+        sessionStorage.setItem('meb_id', meb.meb_id);
+        sessionStorage.setItem('meb_nome', meb.meb_nome);
+
         router.push('desligarMembro');
+        
     }
 
     async function religarMembro(membro, index_linha){
@@ -130,7 +142,7 @@
     function defineWhere(tipo_filtro){
         let where = '';
         switch (tipo_filtro) {
-            case 'mebros':
+            case 'membros':
                 where = 'WHERE desmeb_id IS NULL';
             break;
             case 'membros_desligados':
@@ -146,7 +158,7 @@
     function defineJoin(tipo_filtro){
         let join = '';
         switch (tipo_filtro) {
-            case 'mebros':
+            case 'membros':
             case 'membros_desligados':
                 join = 'LEFT JOIN desligamento_membro ON desmeb_meb_id = meb_id';
             break;
@@ -160,14 +172,18 @@
     function defineCabecario(tipo_filtro){
         let cabecario = ['Nome', 'Data de Nascimento', 'Data de Batismo', 'Número de Rol', '', ''];
         switch (tipo_filtro) {
-            case 'mebros':
+            case 'membros':
                 editar.value = true;
                 desligar.value = true;
                 religar.value = false;
+                data_desligamento.value = false;
             break;
             case 'membros_desligados':
+                cabecario.splice(4, 0, 'Data de Desligamento');
+                editar.value = true;
                 desligar.value = false;
                 religar.value = true;
+                data_desligamento.value = true;
             break;
             case 'membros_falecidos':
                 cabecario.pop();
@@ -175,6 +191,7 @@
                 editar.value = false;
                 desligar.value = false;
                 religar.value = false;
+                data_desligamento.value = false;
             break;
         }
 
@@ -196,6 +213,7 @@
                     :options="options" 
                     @updateValue="FiltraLista"
                     no_change_mounted=true
+                    v-model="opcao_filtro"
                 />
             </div>
         </div>
@@ -211,6 +229,9 @@
                     <td>{{membro.meb_data_nasc}}</td>
                     <td>{{membro.meb_data_batismo}}</td>
                     <td>{{membro.meb_rol}}</td>
+                    <template v-if="data_desligamento">
+                        <td>{{membro.desmeb_data}}</td>
+                    </template > 
                     <template v-if="editar">
                         <td @click="editarMembro(membro, index_linha)" class="editar">Editar</td>
                     </template > 

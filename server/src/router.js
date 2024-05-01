@@ -278,8 +278,8 @@ class router {
         }
 
         try {
-            let fields = ['desmeb_motivo', 'desmeb_meb_id']
-                , values = [params.pacote.desmeb_motivo, params.pacote.id]
+            let fields = ['desmeb_motivo', 'desmeb_meb_id', 'desmeb_data']
+                , values = [params.pacote.desmeb_motivo, params.pacote.id, params.pacote.desmeb_data]
                 , res = await this.db.insert(fields, values, 'desligamento_membro');
             ;  
 
@@ -289,6 +289,32 @@ class router {
             return {
                 erro: true,
                 mensagem: 'Erro interno ao desligar membro!',
+            }
+        }
+    }
+
+    async editaRegistro(params) {
+        if(!params.pacote.tabela || !params.pacote.chave_where || !params.pacote.fields || !params.pacote.values || !params.pacote.id){
+            return {
+                erro: true,
+                mensagem: 'Parâmetro [tabela, where, fields, values, id] obrigatorio faltante!',
+                codigo: 400
+            }
+        }
+
+        try {
+            let res = await this.db.update(params.pacote.fields, params.pacote.values, params.pacote.tabela, params.pacote.chave_where, params.pacote.id);
+
+            return {
+                erro: false,
+                mensagem: 'Registro editado com sucesso!',
+                retorno: res
+            }
+        } catch (error) {
+            console.log(error);
+            return {
+                erro: true,
+                mensagem: 'Erro interno ao editar registro!'
             }
         }
     }
