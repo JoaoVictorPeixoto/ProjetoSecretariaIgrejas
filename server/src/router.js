@@ -51,13 +51,13 @@ class router {
             } else {
                 retorno.erro = true;
                 retorno.mensagem = 'Usuario ou senha invalidos!',
-                retorn.codigo = 401
+                retorno.codigo = 401
             }
             
             return retorno;
 
         } catch (error) {
-            console.log(erro);
+            console.log(error);
             return {
                 erro: true,
                 mensagem: 'Falha ao buscar usuario!',

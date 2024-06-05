@@ -71,6 +71,7 @@ async function clickSubmit(interacao) {
 
     let retorno = await interacoes.interage_server(pacote, interacao);
     processaRetornoPacote(retorno);
+
   } else {
     new alerta().emiteAlerta(pacote.mensagem_erro, "error", 2000);
   }
@@ -155,10 +156,20 @@ function processaRetornoPacote(pacote) {
     , mensagem = pacote.erro ? pacote.mensagem  : name_route === 'editar_membro' ? 'Membro editado com sucesso!' : 'Membro inserido com Sucesso'
     , tipo = pacote.erro ? "error" : "success"
   ;
-  new alerta().emiteAlerta(mensagem, tipo, 2000);
+
+  
 
   if (!pacote.erro && name_route !== 'editar_membro') {
       limpa_formulario.value = true;
+  }
+
+  if (name_route === 'editar_membro') {
+    let pagina = props.voltar_pagina;
+    router.push(pagina).then(() => {
+      new alerta().emiteAlerta(mensagem, tipo, 2000);
+    });
+  } else {
+    new alerta().emiteAlerta(mensagem, tipo, 2000);
   }
 
 }
