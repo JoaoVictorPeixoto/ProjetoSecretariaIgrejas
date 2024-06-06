@@ -2,8 +2,10 @@
 import selectExt from '../components/select.vue'
 import navBar from '../components/navbar.vue'
 import style from '../styles/styles'
+import {reactive, onMounted, ref} from 'vue';
 
 let formulario_css = style.class_formulario
+let file = ref(null);
 
 let options = [
     {
@@ -22,6 +24,10 @@ let options = [
     },
 ]
 
+function input(event){
+    window.alert('opa');
+}
+
 </script>
 
 <template>
@@ -34,6 +40,12 @@ let options = [
     
     <div class="red">
         bla bla
+    </div>
+
+    <div class="mb-3">
+        <label for="formFile" class="form-label">Exemplo de campo file</label>
+        <input class="form-control" type="file" id="formFile" @input="input($event)" ref="file">
+        
     </div>
 
 </template>
