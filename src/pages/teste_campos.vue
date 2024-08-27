@@ -2,10 +2,11 @@
 import selectExt from '../components/select.vue'
 import navBar from '../components/navbar.vue'
 import style from '../styles/styles'
+import interacoes from "../utilities/interacoes";
 import {reactive, onMounted, ref} from 'vue';
 
 let formulario_css = style.class_formulario
-let file = ref(null);
+let file = reactive(null);
 
 let options = [
     {
@@ -24,8 +25,12 @@ let options = [
     },
 ]
 
-function input(event){
-    window.alert('opa');
+async function input(event){
+    let arquivo = file.files[0];
+
+    if (arquivo) {
+        await this.interacoes.uploadFile(arquivo);
+    }
 }
 
 </script>

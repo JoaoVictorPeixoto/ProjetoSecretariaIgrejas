@@ -2,7 +2,11 @@ const express = require('express');
 require("dotenv").config();
 const server = express();
 const router = require('./router')
+const multer = require('multer');
+const storage = require('./multerConfig');
 
+
+// configura o servidor
 server.use(express.json());
 
 server.use((req, res, next) => {
@@ -13,9 +17,36 @@ server.use((req, res, next) => {
         "Origin, X-Requested-With, Content-Type, Accept"
     );
     next();
-})
+});
+
+// configura multer
+const upload = multer({ storage: storage });
+
+//#region :: Endpoints
+
+server.post('/upload', upload.single('file'), async (req, res) => {
+    await resolveRequisicoes(req, res);
+});
 
 server.post('/interacao', async (req, res) => {
+    await resolveRequisicoes(req, res);
+});
+
+server.get('/', (req, res) => {
+    res.json({ok: true});
+    console.log('Acessou!');
+});
+
+//#endregion
+
+// Notifica que o sevidor está rodando
+server.listen(3000, () => {
+    console.log('Rodando na porta 3000');
+});
+
+//#region :: Funções Auxiliares
+
+async function resolveRequisicoes(req, res){
     const ROUTER = new router()
         , body = req.body
     ;
@@ -34,18 +65,6 @@ server.post('/interacao', async (req, res) => {
             mensagem: "Erro interno: " + error.code
         });
     }
-    
-    
-})
+}
 
-server.get('/', (req, res) => {
-    res.json({ok: true});
-    console.log('Acessou!');
-})
-
-
-server.listen(3000, () => {
-    console.log('Rodando na porta 3000');
-});
-
-
+//#endregion 

@@ -1,4 +1,7 @@
-const db = require('./db');
+const db = require('./db')
+    , _ = require('./utils')
+;
+
 class router {
     constructor(){
 
@@ -6,20 +9,26 @@ class router {
 
     db = new db();
 
+
     async resolver(requisicao, params){
+        const erro = {
+            erro: true,
+            stack_erro: '',
+            mensagem: 'Falha na requisição',
+            codigo: 404
+        };
+
         if(requisicao){
             try {
                 return this[requisicao](params);
-            } catch (error) {
-                console.log(error);
-                return {
-                    erro: true,
-                    stack_erro: error,
-                    mensagem: 'Falha na requisição',
-                    codigo: 404
-                };
+            } catch (e) {
+                console.log(e);
+                erro.stack_erro = e;
+                return erro;
             }
            
+        } else {
+            return erro;
         }
         
     }
@@ -318,6 +327,7 @@ class router {
             }
         }
     }
+
 }
 
 module.exports = router;

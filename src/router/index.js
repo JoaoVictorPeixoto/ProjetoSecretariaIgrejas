@@ -45,6 +45,11 @@ const router = createRouter({
       name: 'desligar_membro',
       component: () => import('../pages/desligar_membro.vue')
     },
+    {
+      path: '/integrarListaMembros',
+      name: 'integrar_lista_membros',
+      component: () => import('../pages/integrar_lista_membros.vue')
+    },
     
     
   ]

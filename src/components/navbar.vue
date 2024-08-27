@@ -35,6 +35,7 @@ function redirecionar(path){
                   <li><a class="dropdown-item" @click="redirecionar('listaMembros')">Listas de Membros</a></li>
                   <li><a class="dropdown-item"  @click="redirecionar('uniao')">União de Membros</a></li>
                   <li><a class="dropdown-item"  @click="redirecionar('reintegracao')">Reintegração de membro</a></li>
+                  <li><a class="dropdown-item"  @click="redirecionar('integrarListaMembros')">Integração de membros</a></li>
                   <li><a class="dropdown-item" href="#">Suspensão de Membro</a></li>
                   <li><a class="dropdown-item"  @click="redirecionar('testeCampos')">teste campos</a></li>
                 </ul>
