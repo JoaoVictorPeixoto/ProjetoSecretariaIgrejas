@@ -25,7 +25,11 @@ const upload = multer({ storage: storage });
 //#region :: Endpoints
 
 server.post('/upload', upload.single('file'), async (req, res) => {
-    await resolveRequisicoes(req, res);
+    let result = {
+        file_path: req.file.path
+    };
+
+    res.json(result);
 });
 
 server.post('/interacao', async (req, res) => {
@@ -36,6 +40,8 @@ server.get('/', (req, res) => {
     res.json({ok: true});
     console.log('Acessou!');
 });
+
+server.use(express.static('../uploads'));
 
 //#endregion
 

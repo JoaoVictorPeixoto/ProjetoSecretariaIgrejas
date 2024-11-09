@@ -1,5 +1,7 @@
 const db = require('./db')
     , _ = require('./utils')
+    , fs = require('fs')
+    , XLSX = require('xlsx')
 ;
 
 class router {
@@ -149,7 +151,7 @@ class router {
 
         // valida campos
         pagina.setup(params.pagina);
-        let campos_verificados = await pagina.verify(params.pacote.campos);
+        let campos_verificados = await pagina.verify(params.pacote.campos, params.pacote.comando);
 
         try {
 
@@ -186,7 +188,6 @@ class router {
         }
         
     }
-
 
     async __carrega_pagina(nome_pagina){
         let pagina_aquivo;
@@ -328,6 +329,130 @@ class router {
         }
     }
 
+    async integraListaMembros(params) {
+        if(!params.pacote.file_path){
+            return this.pacoteDeRetorno(400, 'Parâmetro [file_path] obrigatorio faltante!', true, null);
+        }
+
+        try {
+            const workbook = XLSX.readFile(params.pacote.file_path);
+            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+            
+            let retorno = await this.criarListaMembros(worksheet);
+
+            fs.unlinkSync(params.pacote.file_path);
+
+            return retorno;
+        } catch (err) {
+            console.error(err);
+            return this.pacoteDeRetorno(500, 'Erro interno', true, null);
+        }
+    }
+
+    //#region :: Funções Auxiliares
+
+    pacoteDeRetorno(codigo, mensagem, erro, retorno) {
+        return {
+            erro: erro,
+            mensagem: mensagem,
+            codigo: codigo,
+            retorno: retorno
+        }
+    }
+
+    async criarListaMembros(planilha) {
+        let planilha_json = XLSX.utils.sheet_to_json(planilha, {raw: false});
+
+        for (let i = 0; i < planilha_json.length; i++) {
+            const res = planilha_json[i];
+            
+            let fields = []
+                , values = [];
+            ;
+            
+            if (!res.NOME || !res.NASCIMENTO) {
+                let msg = res.nome ? `Membro ${res.NOME} sem indicação de data de nascimento` 
+                            : res.NASCIMENTO ? `Membro nascido em ${res.NASCIMENTO} sem indicação de nome` : `Membro sem indicação de nome ou data de nascimento` 
+
+                return this.pacoteDeRetorno(400, msg, true, null);
+            }
+            
+            let date = this.getDate(res.NASCIMENTO);
+
+            let membro_existente = await this.db.select(`
+                SELECT meb_id FROM membros
+                WHERE meb_nome = '${res.NOME}'
+                AND meb_data_nasc =  '${date}'
+            `);
+            
+            if (!membro_existente.length) {
+                const ajustarParametros = async (parametro) => {
+                    let field
+                        , value
+                    ;
+
+                    switch(parametro) {
+                        case 'BATISMO':
+                            field = 'meb_data_batismo';
+                            value = this.getDate(res[parametro]);
+                        break;
+
+                        case 'COD':
+                            field = 'meb_rol';
+                        break;
+
+                        case 'CONGREGACAO':
+                            field = 'meb_cong_id';
+                            let congregacao = await this.db.select(
+                                `
+                                    SELECT cong_id FROM congregacao
+                                    WHERE cong_nome = '${res.CONGREGACAO}'
+
+                                `
+                            );
+
+                            if (congregacao.length) {
+                                value = congregacao[0].cong_id
+                            }
+                        break;
+
+                        case 'NASCIMENTO':
+                            field = 'meb_data_nasc';
+                            value = this.getDate(res[parametro]);
+                        break;
+
+                        case 'NOME':
+                            field = 'meb_nome';
+                        break;
+                    }
+
+                    if (!value) {
+                        value = res[parametro];
+                    }
+                    
+                    fields.push(field);
+                    values.push(value);
+                }
+
+                for (const key in res) {
+                    await ajustarParametros(key);
+                }
+
+                let insert = await this.db.insert(fields, values, 'membros');
+            }
+        }
+
+        
+        return this.pacoteDeRetorno(200, 'Sucesso!', false, null);
+    }
+
+    getDate(data_string) {
+        let partes = data_string.split('/');
+
+        return `${partes[2]}-${partes[1]}-${partes[0]}`;
+    }
+
+    //#endregion
 }
 
 module.exports = router;

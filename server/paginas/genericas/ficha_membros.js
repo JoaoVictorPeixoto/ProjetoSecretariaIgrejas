@@ -378,7 +378,7 @@ class fichaMembro {
      * Faz verificações de regra de negocio.
      * @param {*} campos - campos do formulario vindo client, já com seu value que será mandado para a persistencia
      */
-    async verify(campos){
+    async verify(campos, acao){
         let campos_com_erro = [];
 
         for (let i = 0; i < campos.length; i++) {
@@ -394,12 +394,14 @@ class fichaMembro {
                 continue
             }
 
-            // verifica obrigatoriedade do campo
-            let res = this.__verificaObrigatoriedade(campo, definicao_campo);
-            if(res.erro){
-                campo.erro = true;
-                campo.mensagem = res.mensagem;
-                campos_com_erro.push(campo);
+            // verifica obrigatoriedade do campo, caso não seja uma inclusão
+            if (acao !== 'update') {
+                let res = this.__verificaObrigatoriedade(campo, definicao_campo);
+                if(res.erro){
+                    campo.erro = true;
+                    campo.mensagem = res.mensagem;
+                    campos_com_erro.push(campo);
+                }
             }
 
         }

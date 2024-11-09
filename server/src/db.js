@@ -17,9 +17,13 @@ class db {
             });
             
             const res = await conection.query(sql);
+
+            conection.end();
+
             return res[0];
             
         } catch (error) {
+            conection.end();
             return error;
         }
     }
@@ -68,6 +72,8 @@ class db {
                 VALUE
                 (${values_textual})
             `);
+            
+            conection.end();
 
             return {
                 erro: false,
@@ -75,6 +81,7 @@ class db {
             }
             
         } catch (error) {
+            conection.end();
             console.log(error);
             return {
                 erro: true,
@@ -127,12 +134,14 @@ class db {
                 ${where}
             `);
 
+            conection.end();
             return {
                 erro: false,
                 mensagem: 'Operação realizada com sucesso!'
             }
             
         } catch (error) {
+            conection.end();
             console.log(error);
             return {
                 erro: true,
@@ -165,12 +174,14 @@ class db {
                 WHERE ${where}
             `);
 
+            conection.end();
             return {
                 erro: false,
                 mensagem: 'Delete realizado com sucesso!'
             }
             
         } catch (error) {
+            conection.end();
             console.log(error);
             return {
                 erro: true,
