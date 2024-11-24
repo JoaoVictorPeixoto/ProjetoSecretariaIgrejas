@@ -3,13 +3,14 @@ class carregamentoPaginas {
 
     }
 
-    async buscaInfoPag(pagina, interacao, busca){
+    async buscaInfoPag(pagina, interacao, busca, acao){
         try {
             let response = await fetch('http://localhost:3000/interacao', {
                 method: "POST",
                 body: JSON.stringify({
                     interacao: interacao,
                     pagina: pagina,
+                    acao: acao
                 }),
                 headers: {
                     "Content-type": "application/json; charset=UTF-8"

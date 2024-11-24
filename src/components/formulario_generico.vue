@@ -1,27 +1,31 @@
 <script setup>
-import {reactive, ref, onMounted} from 'vue';
+import {reactive, onMounted, ref} from 'vue';
 import carregamentoPaginas from '../utilities/carregamento_paginas'
 import style from '../styles/styles';
 import campo from './campos.vue'
+import {useRouter} from 'vue-router';
+
 
 // campos e botões do formulario
 let rows_campos = reactive([])
     , rows_buttons = reactive([])
 ;
 
-// eventos proprios do formulario
-const emit = defineEmits(['updateFormulario', 'clickButtonSubmit']);
+const campos = ref(null);
 
-// Classe generica para botões
-let btn = style.class_btn;
+const router = useRouter();
+
+// eventos proprios do formulario
+const emit = defineEmits(['updateFormulario', 'clickButtonSubmit', 'formularioCarregado']);
 
 // Campos do formulario
 let props = defineProps(['pagina']);
 
 // Metodos
 onMounted(async () => {
+    let acao = router.currentRoute.value.name;
     let campos =  await new carregamentoPaginas().buscaInfoPag(props.pagina, 'carregaCampos', 'campos')
-        , buttons = await new carregamentoPaginas().buscaInfoPag(props.pagina, 'carregaButtons', 'buttons')
+        , buttons = await new carregamentoPaginas().buscaInfoPag(props.pagina, 'carregaButtons', 'buttons', acao)
     ; 
     let controle_size = 0
        ,  row = []
@@ -48,6 +52,8 @@ onMounted(async () => {
     if(controle_size <= 12){
         rows_campos.push(row);
     }
+
+    emit('formularioCarregado');
 });
 
 // Enter do teclado
@@ -60,11 +66,12 @@ function clickButton(id, button_submit, interacao){
 // Atualiza o value do formulario e emite o event de chang do formulario.
 function changCampos(campo){
     for (let i = 0; i < rows_campos.length; i++) {
-        for(let j; j < rows_campos[i].length ; j++){
+        for(let j = 0; j < rows_campos[i].length ; j++){
             if(rows_campos[i][j].id === campo.id){
                 rows_campos[i][j].id = campo.id;
                 rows_campos[i][j].label = campo.label;
                 rows_campos[i][j].value = campo.value;
+                rows_campos[i][j].erro = campo.erro;
             }
         }
     }
@@ -72,9 +79,9 @@ function changCampos(campo){
   emit('updateFormulario', rows_campos);
 }
 
-
-
-// <inputText @updateValue="changCampos" :label="campo.label" :type="campo.type" :input_id="campo.id"/>
+defineExpose({
+    campos
+})
 
 </script>
 
@@ -83,11 +90,10 @@ function changCampos(campo){
         <template v-for="campo in rows_campos[index]" :key="campo.id">
             <div :class="'col-'+campo.size">
                 <campo 
+                    ref="campos"
                     :tipo_campo="campo.type"
                     :params="campo"
                     @changCampo="changCampos"
-                    @focusButton="$emit('focusButton')"
-                    @blurButton="$emit('blurButton')"
                     @clickButton="clickButton"
                 />
             </div>
@@ -96,7 +102,7 @@ function changCampos(campo){
     <div class="d-flex flex-row-reverse mt-5">
         <template v-for="button in rows_buttons" :key="button.id">
             <div :class="'col-'+button.size+' d-flex align-items-end'">
-                <campo 
+                <campo
                     :tipo_campo="button.type"
                     :params="button"
                     @focusButton="$emit('focusButton')"

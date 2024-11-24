@@ -1,7 +1,7 @@
 class interacoes {
     
     /**
-     * Cadastra um novo membro no sistema
+     * Faz uma interação com o servidor
      */
     async interage_server(paramns, interacao){
         try {
@@ -9,7 +9,7 @@ class interacoes {
                 method: "POST",
                 body: JSON.stringify({
                     interacao: interacao,
-                    paramns
+                    pacote: paramns
                 }),
                 headers: {
                     "Content-type": "application/json; charset=UTF-8"
@@ -18,12 +18,38 @@ class interacoes {
 
             let resposta = await response.json();
             
-            console.log(resposta.mensagem);
-
             return resposta;
             
         } catch (error) {
             console.log(error);
+            return error;
+        }
+    }
+
+
+    /**
+     * Faz upload de um file, ou uma lista de files para o servidor.
+     */
+    async uploadFile(files) {
+        try {
+            let data = new FormData();
+            data.append('file', files);
+
+            let response = await fetch('http://localhost:3000/upload', {
+                method: "POST",
+                body: data,
+                // headers: {
+                //     "Content-type": "multipart/form-data"
+                // }
+            });
+
+            let resposta = await response.json();
+            
+            return resposta;
+            
+        } catch (error) {
+            console.log(error);
+            return error;
         }
     }
 

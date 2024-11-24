@@ -7,10 +7,10 @@ import navBar from '../components/navbar.vue'
 </script>
 
 <template>
-
+    
     <navBar />
-    <ficha  />
-
+    <ficha enviar_id="true" />
+    
 </template>
 
 <style>

@@ -1,5 +1,5 @@
 <script setup>
-import { useRouter, onBeforeRouteLeave} from 'vue-router'
+import { useRouter} from 'vue-router'
 
 // instancia do router
 const router = useRouter();
@@ -8,12 +8,8 @@ const router = useRouter();
 const props = defineProps(['closeLink']);
 
 function fechar(){
-
   let pagina = props.closeLink ? props.closeLink : '/home'
-  
   router.push(pagina);
-
-  
 }
 
 function redirecionar(path){
@@ -23,7 +19,7 @@ function redirecionar(path){
 </script>
 
 <template>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-sm bg-body-tertiary">
         <div class="container-fluid">
           <span class="navbar-brand">Secretaria</span>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,11 +32,12 @@ function redirecionar(path){
                   Membros
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Listas de Membros</a></li>
+                  <li><a class="dropdown-item" @click="redirecionar('listaMembros')">Listas de Membros</a></li>
                   <li><a class="dropdown-item"  @click="redirecionar('uniao')">União de Membros</a></li>
                   <li><a class="dropdown-item"  @click="redirecionar('reintegracao')">Reintegração de membro</a></li>
-                  <li><a class="dropdown-item" href="#">Falecimento</a></li>
-                  <li><a class="dropdown-item" href="#">Suspensão</a></li>
+                  <li><a class="dropdown-item"  @click="redirecionar('integrarListaMembros')">Integração de membros</a></li>
+                  <li><a class="dropdown-item" href="#">Suspensão de Membro</a></li>
+                  <li><a class="dropdown-item"  @click="redirecionar('testeCampos')">teste campos</a></li>
                 </ul>
               </li>
               <li class="nav-item">
@@ -48,13 +45,20 @@ function redirecionar(path){
               </li>
             </ul>
             <form class="d-flex">
-              <button type="button" class="btn-close" aria-label="Close" @click="fechar"></button>
+              <i class="bi bi-x fs-2 aumentar" @click="fechar"></i>
             </form>
           </div>
         </div>
-      </nav>
+    </nav>
 </template>
 
 <style scoped>
+.aumentar:hover{
+  color: rgb(0, 4, 255);
+}
+
+.aumentar{
+  color: rgb(0, 0, 0);
+}
 
 </style>

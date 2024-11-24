@@ -23,14 +23,16 @@ async function entrar(){
 
   let res = await login.entrar(usr_ident, usr_senha); 
   
-  new alerta().emiteAlerta(res.mensagem, res.erro ? 'error' : 'success', 1500);
+  
 
   if(!res.erro){
     usuario_validado = true;
-    setTimeout(() => {
-      router.push('/home');
-    }, "2000");
+    router.push('/home').then(() =>{
+      new alerta().emiteAlerta(res.mensagem, 'success', 1500);
+    });
     
+  } else {
+    new alerta().emiteAlerta(res.mensagem, 'error', 1500);
   }
 
 }

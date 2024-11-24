@@ -25,14 +25,37 @@ const router = createRouter({
       name: 'reintegracao_membro',
       component: () => import('../pages/reintegracao.vue')
     },
+    {
+      path: '/testeCampos',
+      name: 'teste_campos',
+      component: () => import('../pages/teste_campos.vue')
+    },
+    {
+      path: '/listaMembros',
+      name: 'lista_membros',
+      component: () => import('../pages/lista_membros.vue')
+    },
+    {
+      path: '/editarMembro',
+      name: 'editar_membro',
+      component: () => import('../pages/editar_membro.vue')
+    },
+    {
+      path: '/desligarMembro',
+      name: 'desligar_membro',
+      component: () => import('../pages/desligar_membro.vue')
+    },
+    {
+      path: '/integrarListaMembros',
+      name: 'integrar_lista_membros',
+      component: () => import('../pages/integrar_lista_membros.vue')
+    },
+    
     
   ]
 })
 
 router.beforeResolve((to, from) => {
-  let location = window.location;
-  // pega todas a rotas do sistema
-  let rotas = getRotas().map(rota => rota.name);
 
   let usr_validado =  sessionStorage.getItem('usuario_validado') === 'true' ? true : false;
 
